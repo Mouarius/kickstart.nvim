@@ -170,202 +170,6 @@ require('lazy').setup({
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
   'christoomey/vim-tmux-navigator',
   {
-    'nvim-neo-tree/neo-tree.nvim',
-    branch = 'v3.x',
-    cmd = 'Neotree',
-    keys = {
-      {
-        '<C-n>',
-        function()
-          require('neo-tree.command').execute { toggle = true, reveal = true, position = 'float' }
-        end,
-        desc = 'Explorer NeoTree',
-      },
-      {
-        '<leader>eg',
-        function()
-          require('neo-tree.command').execute { source = 'git_status', toggle = true, position = 'float' }
-        end,
-        desc = 'Git explorer',
-      },
-      {
-        '<leader>eb',
-        function()
-          require('neo-tree.command').execute { source = 'buffers', toggle = true, position = 'float' }
-        end,
-        desc = 'Buffer explorer',
-      },
-    },
-    deactivate = function()
-      vim.cmd [[Neotree close]]
-    end,
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-      'nvim-tree/nvim-web-devicons', -- not strictly required, but recommended
-      'MunifTanjim/nui.nvim',
-      {
-        's1n7ax/nvim-window-picker',
-        event = 'VeryLazy',
-        version = '2.*',
-        opts = {
-          highlights = {
-            statusline = {
-              focused = {
-                fg = '#f9e2af',
-                bg = '#313244',
-                bold = true,
-              },
-              unfocused = {
-                fg = '#cdd6f4',
-                bg = '#313244',
-                bold = false,
-              },
-            },
-          },
-        },
-      },
-    },
-    opts = {
-      close_if_last_window = true,
-      popup_border_style = 'rounded',
-      enable_git_status = true,
-      enabme_diagnostics = true,
-      window = {
-        filesystem = {
-          bind_to_cwd = false,
-          follow_current_file = { enabled = true },
-          use_libuv_file_watcher = true,
-        },
-        mapping_options = {
-          noremap = true,
-          nowait = true,
-        },
-        mappings = {
-          ['o'] = 'open',
-          ['oc'] = 'noop',
-          ['od'] = 'noop',
-          ['og'] = 'noop',
-          ['om'] = 'noop',
-          ['on'] = 'noop',
-          ['os'] = 'noop',
-          ['ot'] = 'noop',
-          ['O'] = 'noop',
-        },
-      },
-      filesystem = {
-        filtered_items = {
-          visible = false, -- when true, they will just be displayed differently than normal items
-          never_show = { -- remains hidden even if visible is toggled to true, this overrides always_show
-            '.DS_Store',
-            '__pycache__',
-          },
-        },
-        window = {
-          mapping_options = {
-            noremap = true,
-            nowait = false,
-          },
-          mappings = {
-            ['o'] = 'open',
-            ['oc'] = 'noop',
-            ['od'] = 'noop',
-            ['og'] = 'noop',
-            ['om'] = 'noop',
-            ['on'] = 'noop',
-            ['os'] = 'noop',
-            ['ot'] = 'noop',
-            ['O'] = { 'show_help', nowait = false, config = { title = 'Order by', prefix_key = 'O' } },
-            ['Oc'] = { 'order_by_created', nowait = false },
-            ['Od'] = { 'order_by_diagnostics', nowait = false },
-            ['Og'] = { 'order_by_git_status', nowait = false },
-            ['Om'] = { 'order_by_modified', nowait = false },
-            ['On'] = { 'order_by_name', nowait = false },
-            ['Os'] = { 'order_by_size', nowait = false },
-            ['Ot'] = { 'order_by_type', nowait = false },
-          },
-        },
-      },
-    },
-  },
-  {
-    'numToStr/Comment.nvim',
-    dependencies = {
-      'JoosepAlviste/nvim-ts-context-commentstring',
-      opts = { enamble_autocmd = false },
-    },
-    lazy = false,
-    opts = function()
-      return {
-        pre_hook = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook(),
-      }
-    end,
-  },
-  {
-    'lewis6991/gitsigns.nvim',
-    event = { 'BufReadPre', 'BufNewFile' },
-    opts = function()
-      return {
-        on_attach = function(bufnr)
-          local gs = package.loaded.gitsigns
-
-          local function map(mode, l, r, opts)
-            opts = opts or {}
-            opts.buffer = bufnr
-            vim.keymap.set(mode, l, r, opts)
-          end
-
-          -- Navigation
-          map('n', 'àh', function()
-            if vim.wo.diff then
-              return 'àh'
-            end
-            vim.schedule(function()
-              gs.next_hunk()
-            end)
-            return '<Ignore>'
-          end, { expr = true })
-
-          map('n', 'çh', function()
-            if vim.wo.diff then
-              return 'çh'
-            end
-            vim.schedule(function()
-              gs.prev_hunk()
-            end)
-            return '<Ignore>'
-          end, { expr = true })
-
-          -- Actions
-          map('n', '<leader>hs', gs.stage_hunk, { desc = 'Git: Stage hunk' })
-          map('n', '<leader>hr', gs.reset_hunk, { desc = 'Git: Reset hunk' })
-          map('v', '<leader>hs', function()
-            gs.stage_hunk { vim.fn.line '.', vim.fn.line 'v' }
-          end, { desc = 'Git: Stage hunk' })
-          map('v', '<leader>hr', function()
-            gs.reset_hunk { vim.fn.line '.', vim.fn.line 'v' }
-          end, { desc = 'Git: Reset hunk' })
-          map('n', '<leader>hS', gs.stage_buffer, { desc = 'Git: Stage buffer' })
-          map('n', '<leader>hu', gs.undo_stage_hunk, { desc = 'Git: Undo Stage hunk' })
-          map('n', '<leader>hR', gs.reset_buffer, { desc = 'Git: Reset buffer' })
-          map('n', '<leader>hp', gs.preview_hunk, { desc = 'Git: Preview hunk' })
-          map('n', '<leader>hb', function()
-            gs.blame_line { full = true }
-          end, { desc = 'Git: Blame line' })
-          map('n', '<leader>A', gs.toggle_current_line_blame, { desc = 'Git: Toggle current line blame' })
-          map('n', '<leader>hd', gs.diffthis, { desc = 'Git: diff this' })
-          map('n', '<leader>hD', function()
-            gs.diffthis '~'
-          end)
-          map('n', '<leader>td', gs.toggle_deleted)
-
-          -- Text object
-          map({ 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<CR>')
-        end,
-      }
-    end,
-  },
-
-  {
     'FabijanZulj/blame.nvim',
     keys = {
       { '<leader>a', '<cmd>ToggleBlame window<CR>', desc = 'Toggle git blame' },
@@ -464,27 +268,17 @@ require('lazy').setup({
       }
     end,
   },
-
-  -- NOTE: Plugins can specify dependencies.
-  --
-  -- The dependencies are proper plugin specifications as well - anything
-  -- you do for a plugin at the top level, you can do for a dependency.
-  --
-  -- Use the `dependencies` key to specify the dependencies of a particular plugin
-
   { -- Fuzzy Finder (files, lsp, etc)
     'nvim-telescope/telescope.nvim',
     event = 'VimEnter',
     branch = '0.1.x',
     dependencies = {
       'nvim-lua/plenary.nvim',
-      { -- If encountering errors, see telescope-fzf-native README for installation instructions
+      {
         'nvim-telescope/telescope-fzf-native.nvim',
-
         -- `build` is used to run some command when the plugin is installed/updated.
         -- This is only run then, not every time Neovim starts up.
         build = 'make',
-
         -- `cond` is a condition used to determine whether this plugin should be
         -- installed and loaded.
         cond = function()
@@ -492,41 +286,57 @@ require('lazy').setup({
         end,
       },
       { 'nvim-telescope/telescope-ui-select.nvim' },
-
       -- Useful for getting pretty icons, but requires a Nerd Font.
       { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
     },
     config = function()
-      -- Telescope is a fuzzy finder that comes with a lot of different things that
-      -- it can fuzzy find! It's more than just a "file finder", it can search
-      -- many different aspects of Neovim, your workspace, LSP, and more!
-      --
-      -- The easiest way to use Telescope, is to start by doing something like:
-      --  :Telescope help_tags
-      --
-      -- After running this command, a window will open up and you're able to
-      -- type in the prompt window. You'll see a list of `help_tags` options and
-      -- a corresponding preview of the help.
-      --
-      -- Two important keymaps to use while in Telescope are:
-      --  - Insert mode: <c-/>
-      --  - Normal mode: ?
-      --
-      -- This opens a window that shows you all of the keymaps for the current
-      -- Telescope picker. This is really useful to discover what Telescope can
-      -- do as well as how to actually do it!
-
       -- [[ Configure Telescope ]]
       -- See `:help telescope` and `:help telescope.setup()`
+      local actions = require 'telescope.actions'
+      local find_files_no_ignore = function()
+        local action_state = require 'telescope.actions.state'
+        local line = action_state.get_current_line()
+        require('telescope.builtin').find_files { no_ignore = true, default_text = line }
+      end
+      local find_files_with_hidden = function()
+        local action_state = require 'telescope.actions.state'
+        local line = action_state.get_current_line()
+        require('telescope.builtin').find_files { hidden = true, default_text = line }
+      end
       require('telescope').setup {
         -- You can put your default mappings / updates / etc. in here
         --  All the info you're looking for is in `:help telescope.setup()`
         --
-        -- defaults = {
-        --   mappings = {
-        --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-        --   },
-        -- },
+        defaults = {
+          winblend = 10,
+          sorting_strategy = 'ascending',
+          layout_strategy = 'horizontal',
+          layout_config = {
+            horizontal = {
+              prompt_position = 'top',
+            },
+            vertical = {
+              mirror = false,
+            },
+          },
+          path_display = {
+            truncate = 3,
+          },
+          mappings = {
+            i = {
+              ['î'] = find_files_no_ignore,
+              ['Ì'] = find_files_with_hidden,
+              ['<M-i>'] = find_files_no_ignore,
+              ['<M-I>'] = find_files_with_hidden,
+              ['<C-j>'] = actions.move_selection_next,
+              ['<C-k>'] = actions.move_selection_previous,
+              ['<C-Down>'] = actions.cycle_history_next,
+              ['<C-Up>'] = actions.cycle_history_prev,
+              ['<C-f>'] = actions.preview_scrolling_down,
+              ['<C-b>'] = actions.preview_scrolling_up,
+            },
+          },
+        },
         -- pickers = {}
         extensions = {
           ['ui-select'] = {
@@ -538,6 +348,7 @@ require('lazy').setup({
       -- Enable Telescope extensions if they are installed
       pcall(require('telescope').load_extension, 'fzf')
       pcall(require('telescope').load_extension, 'ui-select')
+      pcall(require('telescope').load_extension, 'harpoon')
 
       -- See `:help telescope.builtin`
       local builtin = require 'telescope.builtin'
@@ -563,7 +374,7 @@ require('lazy').setup({
 
       -- It's also possible to pass additional configuration options.
       --  See `:help telescope.builtin.live_grep()` for information about particular keys
-      vim.keymap.set('n', '<leader>s/', function()
+      vim.keymap.set('n', '<leader>f/', function()
         builtin.live_grep {
           grep_open_files = true,
           prompt_title = 'Live Grep in Open Files',
@@ -571,7 +382,7 @@ require('lazy').setup({
       end, { desc = '[F]ind [/] in Open Files' })
 
       -- Shortcut for searching your Neovim configuration files
-      vim.keymap.set('n', '<leader>sn', function()
+      vim.keymap.set('n', '<leader>fn', function()
         builtin.find_files { cwd = vim.fn.stdpath 'config' }
       end, { desc = '[F]ind [N]eovim files' })
     end,
@@ -662,7 +473,7 @@ require('lazy').setup({
 
           -- Rename the variable under your cursor.
           --  Most Language Servers support renaming across files, etc.
-          map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
+          map('<leader>rn', vim.lsp.buf.reame, '[R]e[n]ame')
 
           -- Execute a code action, usually your cursor needs to be on top of an error
           -- or a suggestion from your LSP for this to activate.
