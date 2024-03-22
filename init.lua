@@ -146,7 +146,6 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 --  See `:help lua-guide-autocommands`
 
 -- Highlight when yanking (copying) text
---  Try it with `yap` in normal mode
 --  See `:help vim.highlight.on_yank()`
 vim.api.nvim_create_autocmd('TextYankPost', {
   desc = 'Highlight when yanking (copying) text',
@@ -167,47 +166,270 @@ vim.opt.rtp:prepend(lazypath)
 
 -- [[ Configure and install plugins ]]
 --
---  To check the current status of your plugins, run
---    :Lazy
---
---  You can press `?` in this menu for help. Use `:q` to close the window
---
---  To update plugins you can run
---    :Lazy update
---
--- NOTE: Here is where you install your plugins.
 require('lazy').setup({
-  -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
-
-  -- NOTE: Plugins can also be added by using a table,
-  -- with the first argument being the link and the following
-  -- keys can be used to configure plugin behavior/loading/etc.
-  --
-  -- Use `opts = {}` to force a plugin to be loaded.
-  --
-  --  This is equivalent to:
-  --    require('Comment').setup({})
-
-  -- "gc" to comment visual regions/lines
-  { 'numToStr/Comment.nvim', opts = {} },
-
-  -- Here is a more advanced example where we pass configuration
-  -- options to `gitsigns.nvim`. This is equivalent to the following Lua:
-  --    require('gitsigns').setup({ ... })
-  --
-  -- See `:help gitsigns` to understand what the configuration keys do
-  { -- Adds git related signs to the gutter, as well as utilities for managing changes
-    'lewis6991/gitsigns.nvim',
-    opts = {
-      signs = {
-        add = { text = '+' },
-        change = { text = '~' },
-        delete = { text = '_' },
-        topdelete = { text = '‾' },
-        changedelete = { text = '~' },
+  'christoomey/vim-tmux-navigator',
+  {
+    'nvim-neo-tree/neo-tree.nvim',
+    branch = 'v3.x',
+    cmd = 'Neotree',
+    keys = {
+      {
+        '<C-n>',
+        function()
+          require('neo-tree.command').execute { toggle = true, reveal = true, position = 'float' }
+        end,
+        desc = 'Explorer NeoTree',
+      },
+      {
+        '<leader>eg',
+        function()
+          require('neo-tree.command').execute { source = 'git_status', toggle = true, position = 'float' }
+        end,
+        desc = 'Git explorer',
+      },
+      {
+        '<leader>eb',
+        function()
+          require('neo-tree.command').execute { source = 'buffers', toggle = true, position = 'float' }
+        end,
+        desc = 'Buffer explorer',
       },
     },
+    deactivate = function()
+      vim.cmd [[Neotree close]]
+    end,
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-tree/nvim-web-devicons', -- not strictly required, but recommended
+      'MunifTanjim/nui.nvim',
+      {
+        's1n7ax/nvim-window-picker',
+        event = 'VeryLazy',
+        version = '2.*',
+        opts = {
+          highlights = {
+            statusline = {
+              focused = {
+                fg = '#f9e2af',
+                bg = '#313244',
+                bold = true,
+              },
+              unfocused = {
+                fg = '#cdd6f4',
+                bg = '#313244',
+                bold = false,
+              },
+            },
+          },
+        },
+      },
+    },
+    opts = {
+      close_if_last_window = true,
+      popup_border_style = 'rounded',
+      enable_git_status = true,
+      enabme_diagnostics = true,
+      window = {
+        filesystem = {
+          bind_to_cwd = false,
+          follow_current_file = { enabled = true },
+          use_libuv_file_watcher = true,
+        },
+        mapping_options = {
+          noremap = true,
+          nowait = true,
+        },
+        mappings = {
+          ['o'] = 'open',
+          ['oc'] = 'noop',
+          ['od'] = 'noop',
+          ['og'] = 'noop',
+          ['om'] = 'noop',
+          ['on'] = 'noop',
+          ['os'] = 'noop',
+          ['ot'] = 'noop',
+          ['O'] = 'noop',
+        },
+      },
+      filesystem = {
+        filtered_items = {
+          visible = false, -- when true, they will just be displayed differently than normal items
+          never_show = { -- remains hidden even if visible is toggled to true, this overrides always_show
+            '.DS_Store',
+            '__pycache__',
+          },
+        },
+        window = {
+          mapping_options = {
+            noremap = true,
+            nowait = false,
+          },
+          mappings = {
+            ['o'] = 'open',
+            ['oc'] = 'noop',
+            ['od'] = 'noop',
+            ['og'] = 'noop',
+            ['om'] = 'noop',
+            ['on'] = 'noop',
+            ['os'] = 'noop',
+            ['ot'] = 'noop',
+            ['O'] = { 'show_help', nowait = false, config = { title = 'Order by', prefix_key = 'O' } },
+            ['Oc'] = { 'order_by_created', nowait = false },
+            ['Od'] = { 'order_by_diagnostics', nowait = false },
+            ['Og'] = { 'order_by_git_status', nowait = false },
+            ['Om'] = { 'order_by_modified', nowait = false },
+            ['On'] = { 'order_by_name', nowait = false },
+            ['Os'] = { 'order_by_size', nowait = false },
+            ['Ot'] = { 'order_by_type', nowait = false },
+          },
+        },
+      },
+    },
+  },
+  {
+    'numToStr/Comment.nvim',
+    dependencies = {
+      'JoosepAlviste/nvim-ts-context-commentstring',
+      opts = { enamble_autocmd = false },
+    },
+    lazy = false,
+    opts = function()
+      return {
+        pre_hook = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook(),
+      }
+    end,
+  },
+  {
+    'lewis6991/gitsigns.nvim',
+    event = { 'BufReadPre', 'BufNewFile' },
+    opts = function()
+      return {
+        on_attach = function(bufnr)
+          local gs = package.loaded.gitsigns
+
+          local function map(mode, l, r, opts)
+            opts = opts or {}
+            opts.buffer = bufnr
+            vim.keymap.set(mode, l, r, opts)
+          end
+
+          -- Navigation
+          map('n', 'àh', function()
+            if vim.wo.diff then
+              return 'àh'
+            end
+            vim.schedule(function()
+              gs.next_hunk()
+            end)
+            return '<Ignore>'
+          end, { expr = true })
+
+          map('n', 'çh', function()
+            if vim.wo.diff then
+              return 'çh'
+            end
+            vim.schedule(function()
+              gs.prev_hunk()
+            end)
+            return '<Ignore>'
+          end, { expr = true })
+
+          -- Actions
+          map('n', '<leader>hs', gs.stage_hunk, { desc = 'Git: Stage hunk' })
+          map('n', '<leader>hr', gs.reset_hunk, { desc = 'Git: Reset hunk' })
+          map('v', '<leader>hs', function()
+            gs.stage_hunk { vim.fn.line '.', vim.fn.line 'v' }
+          end, { desc = 'Git: Stage hunk' })
+          map('v', '<leader>hr', function()
+            gs.reset_hunk { vim.fn.line '.', vim.fn.line 'v' }
+          end, { desc = 'Git: Reset hunk' })
+          map('n', '<leader>hS', gs.stage_buffer, { desc = 'Git: Stage buffer' })
+          map('n', '<leader>hu', gs.undo_stage_hunk, { desc = 'Git: Undo Stage hunk' })
+          map('n', '<leader>hR', gs.reset_buffer, { desc = 'Git: Reset buffer' })
+          map('n', '<leader>hp', gs.preview_hunk, { desc = 'Git: Preview hunk' })
+          map('n', '<leader>hb', function()
+            gs.blame_line { full = true }
+          end, { desc = 'Git: Blame line' })
+          map('n', '<leader>A', gs.toggle_current_line_blame, { desc = 'Git: Toggle current line blame' })
+          map('n', '<leader>hd', gs.diffthis, { desc = 'Git: diff this' })
+          map('n', '<leader>hD', function()
+            gs.diffthis '~'
+          end)
+          map('n', '<leader>td', gs.toggle_deleted)
+
+          -- Text object
+          map({ 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<CR>')
+        end,
+      }
+    end,
+  },
+
+  {
+    'FabijanZulj/blame.nvim',
+    keys = {
+      { '<leader>a', '<cmd>ToggleBlame window<CR>', desc = 'Toggle git blame' },
+    },
+  },
+  {
+    'ThePrimeagen/harpoon',
+    keys = function()
+      return {
+        {
+          '<leader>mm',
+          require('harpoon.mark').add_file,
+          desc = 'Mark file with harpoon',
+          silent = true,
+        },
+        {
+          '<leader>mn',
+          require('harpoon.ui').nav_next,
+          desc = 'Goto next harpoon mark',
+          silent = true,
+        },
+        {
+          '<leader>mp',
+          require('harpoon.ui').nav_prev,
+          desc = 'Goto prev harpoon mark',
+          silent = true,
+        },
+        {
+          '<leader>ml',
+          require('harpoon.ui').toggle_quick_menu,
+          desc = 'Toggle harpoon menu',
+          silent = true,
+        },
+      }
+    end,
+  },
+  {
+    'echasnovski/mini.bufremove',
+    keys = {
+      {
+        '<leader>bd',
+        function()
+          local bd = require('mini.bufremove').delete
+          if vim.bo.modified then
+            local choice = vim.fn.confirm('Save changes to %q?', '&Yes\n&No\n&Cancel', 'Warning')
+            if choice == 1 then
+              vim.cmd.write()
+              bd(0)
+            elseif choice == 2 then
+              bd(0, true)
+            end
+          else
+            bd(0)
+          end
+        end,
+        desc = 'Delete buffer',
+      },
+    },
+  },
+  {
+    'kylechui/nvim-surround',
+    event = { 'BufReadPre', 'BufNewFile' },
+    version = '*', -- Use for stability; omit to use `main` branch for the latest features
+    config = true,
   },
 
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
@@ -227,17 +449,18 @@ require('lazy').setup({
 
   { -- Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
-    event = 'VimEnter', -- Sets the loading event to 'VimEnter'
-    config = function() -- This is the function that runs, AFTER loading
+    event = 'VimEnter',
+    config = function()
       require('which-key').setup()
 
-      -- Document existing key chains
       require('which-key').register {
         ['<leader>c'] = { name = '[C]ode', _ = 'which_key_ignore' },
         ['<leader>d'] = { name = '[D]ocument', _ = 'which_key_ignore' },
         ['<leader>r'] = { name = '[R]ename', _ = 'which_key_ignore' },
-        ['<leader>s'] = { name = '[S]earch', _ = 'which_key_ignore' },
+        ['<leader>s'] = { name = '[F]ind', _ = 'which_key_ignore' },
         ['<leader>w'] = { name = '[W]orkspace', _ = 'which_key_ignore' },
+        ['<leader>o'] = { name = '[O]ptions', _ = 'which_key_ignore' },
+        ['<leader>h'] = { name = '[H]unk', _ = 'which_key_ignore' },
       }
     end,
   },
@@ -318,15 +541,15 @@ require('lazy').setup({
 
       -- See `:help telescope.builtin`
       local builtin = require 'telescope.builtin'
-      vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
-      vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
-      vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
-      vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
-      vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
-      vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
-      vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
-      vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
-      vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
+      vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = '[F]ind [H]elp' })
+      vim.keymap.set('n', '<leader>fk', builtin.keymaps, { desc = '[F]ind [K]eymaps' })
+      vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = '[F]ind [F]iles' })
+      vim.keymap.set('n', '<leader>fs', builtin.builtin, { desc = '[F]ind [S]elect Telescope' })
+      vim.keymap.set('n', '<leader>fw', builtin.grep_string, { desc = '[F]ind current [W]ord' })
+      vim.keymap.set('n', '<leader>fc', builtin.live_grep, { desc = '[F]ind by [G]rep' })
+      vim.keymap.set('n', '<leader>fd', builtin.diagnostics, { desc = '[F]ind [D]iagnostics' })
+      vim.keymap.set('n', '<leader>fr', builtin.resume, { desc = '[F]ind [R]esume' })
+      vim.keymap.set('n', '<leader>fo', builtin.oldfiles, { desc = '[F]ind Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
 
       -- Slightly advanced example of overriding default behavior and theme
@@ -345,12 +568,12 @@ require('lazy').setup({
           grep_open_files = true,
           prompt_title = 'Live Grep in Open Files',
         }
-      end, { desc = '[S]earch [/] in Open Files' })
+      end, { desc = '[F]ind [/] in Open Files' })
 
       -- Shortcut for searching your Neovim configuration files
       vim.keymap.set('n', '<leader>sn', function()
         builtin.find_files { cwd = vim.fn.stdpath 'config' }
-      end, { desc = '[S]earch [N]eovim files' })
+      end, { desc = '[F]ind [N]eovim files' })
     end,
   },
 
@@ -769,6 +992,12 @@ require('lazy').setup({
       --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
     end,
   },
+  {
+    'nvim-treesitter/nvim-treesitter-context',
+    event = { 'BufReadPost' },
+    enabled = true,
+    opts = { mode = 'cursor', max_lines = 3 },
+  },
 
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
@@ -779,7 +1008,7 @@ require('lazy').setup({
   --  Here are some example plugins that I've included in the Kickstart repository.
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
-  -- require 'kickstart.plugins.debug',
+  require 'kickstart.plugins.debug',
   -- require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
 
