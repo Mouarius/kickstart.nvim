@@ -89,6 +89,10 @@ vim.keymap.set('n', '<leader>ow', function()
   vim.opt.wrap = not vim.opt.wrap:get()
 end, { desc = 'Toggle line wrapping' })
 
+vim.keymap.set('n', '<leader>orn', function()
+  vim.opt.relativenumber = not vim.opt.relativenumber:get()
+end)
+
 -- Navigation keymaps
 vim.keymap.set('n', 'L', '$', { desc = 'Go to end of line' })
 
@@ -167,89 +171,11 @@ vim.opt.rtp:prepend(lazypath)
 -- [[ Configure and install plugins ]]
 --
 require('lazy').setup({
+  change_detection = {
+    notify = false,
+  },
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
-  'christoomey/vim-tmux-navigator',
-  {
-    'FabijanZulj/blame.nvim',
-    keys = {
-      { '<leader>a', '<cmd>ToggleBlame window<CR>', desc = 'Toggle git blame' },
-    },
-  },
-  {
-    'ThePrimeagen/harpoon',
-    keys = function()
-      return {
-        {
-          '<leader>mm',
-          require('harpoon.mark').add_file,
-          desc = 'Mark file with harpoon',
-          silent = true,
-        },
-        {
-          '<leader>mn',
-          require('harpoon.ui').nav_next,
-          desc = 'Goto next harpoon mark',
-          silent = true,
-        },
-        {
-          '<leader>mp',
-          require('harpoon.ui').nav_prev,
-          desc = 'Goto prev harpoon mark',
-          silent = true,
-        },
-        {
-          '<leader>ml',
-          require('harpoon.ui').toggle_quick_menu,
-          desc = 'Toggle harpoon menu',
-          silent = true,
-        },
-      }
-    end,
-  },
-  {
-    'echasnovski/mini.bufremove',
-    keys = {
-      {
-        '<leader>bd',
-        function()
-          local bd = require('mini.bufremove').delete
-          if vim.bo.modified then
-            local choice = vim.fn.confirm('Save changes to %q?', '&Yes\n&No\n&Cancel', 'Warning')
-            if choice == 1 then
-              vim.cmd.write()
-              bd(0)
-            elseif choice == 2 then
-              bd(0, true)
-            end
-          else
-            bd(0)
-          end
-        end,
-        desc = 'Delete buffer',
-      },
-    },
-  },
-  {
-    'kylechui/nvim-surround',
-    event = { 'BufReadPre', 'BufNewFile' },
-    version = '*', -- Use for stability; omit to use `main` branch for the latest features
-    config = true,
-  },
-
-  -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
-  --
-  -- This is often very useful to both group configuration, as well as handle
-  -- lazy loading plugins that don't need to be loaded immediately at startup.
-  --
-  -- For example, in the following configuration, we use:
-  --  event = 'VimEnter'
-  --
-  -- which loads which-key before all the UI elements are loaded. Events can be
-  -- normal autocommands events (`:help autocmd-events`).
-  --
-  -- Then, because we use the `config` key, the configuration only runs
-  -- after the plugin has been loaded:
-  --  config = function() ... end
+  'christoomey/vim-tmux-navigator', -- Integration with tmux panes
 
   { -- Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
@@ -277,7 +203,6 @@ require('lazy').setup({
       'WhoIsSethDaniel/mason-tool-installer.nvim',
 
       -- Useful status updates for LSP.
-      -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
       { 'j-hui/fidget.nvim', opts = {} },
 
       -- `neodev` configures Lua LSP for your Neovim config, runtime and plugins
@@ -353,7 +278,7 @@ require('lazy').setup({
 
           -- Rename the variable under your cursor.
           --  Most Language Servers support renaming across files, etc.
-          map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
+          map('<leader>cn', vim.lsp.buf.rename, '[C]ode [R]ename')
 
           -- Execute a code action, usually your cursor needs to be on top of an error
           -- or a suggestion from your LSP for this to activate.
@@ -406,7 +331,34 @@ require('lazy').setup({
       local servers = {
         -- clangd = {},
         -- gopls = {},
-        -- pyright = {},
+        pyright = {
+          handlers = {
+            ['textDocument/publishDiagnostics'] = function(err, result, ctx, config)
+              -- In django, pyright keeps bothering me with "reportIncompatibleMethodOverride" errors with models Meta class
+              -- Those lines of code filters the diagnostics with those error codes from the pyright lsp output
+              local filtered_diagnostics = {}
+              for _, value in ipairs(result.diagnostics) do
+                if value ~= nil and value.code ~= 'reportIncompatibleVariableOverride' and value.code ~= 'reportIncompatibleMethodOverride' then
+                  table.insert(filtered_diagnostics, value)
+                end
+              end
+              result.diagnostics = filtered_diagnostics
+              return vim.lsp.diagnostic.on_publish_diagnostics(err, result, ctx, config)
+            end,
+          },
+          settings = {
+            python = {
+              analysis = {
+                diagnosticMode = 'workspace',
+                useLibraryCodeForTypes = true,
+              },
+            },
+            pyright = {
+              disableOrganizeImports = true,
+            },
+          },
+        },
+        ruff_lsp = {},
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
@@ -433,12 +385,6 @@ require('lazy').setup({
         },
       }
 
-      -- Ensure the servers and tools above are installed
-      --  To check the current status of installed tools and/or manually install
-      --  other tools, you can run
-      --    :Mason
-      --
-      --  You can press `g?` for help in this menu.
       require('mason').setup()
 
       -- You can add other tools here that you want Mason to install
@@ -463,33 +409,6 @@ require('lazy').setup({
       }
     end,
   },
-
-  { -- Autoformat
-    'stevearc/conform.nvim',
-    opts = {
-      notify_on_error = false,
-      format_on_save = function(bufnr)
-        -- Disable "format_on_save lsp_fallback" for languages that don't
-        -- have a well standardized coding style. You can add additional
-        -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true }
-        return {
-          timeout_ms = 500,
-          lsp_fallback = not disable_filetypes[vim.bo[bufnr].filetype],
-        }
-      end,
-      formatters_by_ft = {
-        lua = { 'stylua' },
-        -- Conform can also run multiple formatters sequentially
-        -- python = { "isort", "black" },
-        --
-        -- You can use a sub-list to tell conform to run *until* a formatter
-        -- is found.
-        -- javascript = { { "prettierd", "prettier" } },
-      },
-    },
-  },
-
   { -- Autocompletion
     'hrsh7th/nvim-cmp',
     event = 'InsertEnter',
@@ -510,19 +429,15 @@ require('lazy').setup({
           -- `friendly-snippets` contains a variety of premade snippets.
           --    See the README about individual language/framework/plugin snippets:
           --    https://github.com/rafamadriz/friendly-snippets
-          -- {
-          --   'rafamadriz/friendly-snippets',
-          --   config = function()
-          --     require('luasnip.loaders.from_vscode').lazy_load()
-          --   end,
-          -- },
+          {
+            'rafamadriz/friendly-snippets',
+            config = function()
+              require('luasnip.loaders.from_vscode').lazy_load()
+            end,
+          },
         },
       },
       'saadparwaiz1/cmp_luasnip',
-
-      -- Adds other completion capabilities.
-      --  nvim-cmp does not ship with all sources by default. They are split
-      --  into multiple repos for maintenance purposes.
       'hrsh7th/cmp-nvim-lsp',
       'hrsh7th/cmp-path',
     },
@@ -558,7 +473,6 @@ require('lazy').setup({
           --  This will auto-import if your LSP supports it.
           --  This will expand snippets if the LSP sent a snippet.
           ['<C-y>'] = cmp.mapping.confirm { select = true },
-
           -- Manually trigger a completion from nvim-cmp.
           --  Generally you don't need this, because nvim-cmp will display
           --  completions whenever it has completion options available.
@@ -594,65 +508,9 @@ require('lazy').setup({
       }
     end,
   },
-
-  { -- You can easily change to a different colorscheme.
-    -- Change the name of the colorscheme plugin below, and then
-    -- change the command in the config to whatever the name of that colorscheme is.
-    --
-    -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    'folke/tokyonight.nvim',
-    priority = 1000, -- Make sure to load this before all the other start plugins.
-    init = function()
-      -- Load the colorscheme here.
-      -- Like many other themes, this one has different styles, and you could load
-      -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
-
-      -- You can configure highlights by doing something like:
-      vim.cmd.hi 'Comment gui=none'
-    end,
-  },
-
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 
-  { -- Collection of various small independent plugins/modules
-    'echasnovski/mini.nvim',
-    config = function()
-      -- Better Around/Inside textobjects
-      --
-      -- Examples:
-      --  - va)  - [V]isually select [A]round [)]paren
-      --  - yinq - [Y]ank [I]nside [N]ext [']quote
-      --  - ci'  - [C]hange [I]nside [']quote
-      require('mini.ai').setup { n_lines = 500 }
-
-      -- Add/delete/replace surroundings (brackets, quotes, etc.)
-      --
-      -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
-      -- - sd'   - [S]urround [D]elete [']quotes
-      -- - sr)'  - [S]urround [R]eplace [)] [']
-      require('mini.surround').setup()
-
-      -- Simple and easy statusline.
-      --  You could remove this setup call if you don't like it,
-      --  and try some other statusline plugin
-      local statusline = require 'mini.statusline'
-      -- set use_icons to true if you have a Nerd Font
-      statusline.setup { use_icons = vim.g.have_nerd_font }
-
-      -- You can configure sections in the statusline by overriding their
-      -- default behavior. For example, here we set the section for
-      -- cursor location to LINE:COLUMN
-      ---@diagnostic disable-next-line: duplicate-set-field
-      statusline.section_location = function()
-        return '%2l:%-2v'
-      end
-
-      -- ... and there is more!
-      --  Check out: https://github.com/echasnovski/mini.nvim
-    end,
-  },
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
