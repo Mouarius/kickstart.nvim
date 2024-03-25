@@ -56,6 +56,11 @@ vim.opt.splitbelow = true
 vim.opt.list = true
 vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 
+vim.opt.autoindent = true
+vim.opt.expandtab = true
+vim.opt.tabstop = 2
+vim.opt.shiftwidth = 2
+
 -- Preview substitutions live, as you type!
 vim.opt.inccommand = 'split'
 
@@ -331,6 +336,10 @@ require('lazy').setup({
       local servers = {
         -- clangd = {},
         -- gopls = {},
+        --
+        cssls = {},
+        astro = {},
+        tsserver = {},
         pyright = {
           handlers = {
             ['textDocument/publishDiagnostics'] = function(err, result, ctx, config)
@@ -518,6 +527,16 @@ require('lazy').setup({
       ensure_installed = { 'bash', 'c', 'html', 'lua', 'markdown', 'vim', 'vimdoc' },
       -- Autoinstall languages that are not installed
       auto_install = true,
+      autotag = { enable = true },
+      incremental_selection = {
+        enable = true,
+        keymaps = {
+          init_selection = '<C-space>',
+          node_incremental = '<C-space>',
+          scope_incremental = false,
+          node_decremental = '<bs>',
+        },
+      },
       highlight = {
         enable = true,
         -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
