@@ -358,7 +358,7 @@ require('lazy').setup({
           settings = {
             python = {
               analysis = {
-                diagnosticMode = 'workspace',
+                diagnosticMode = 'openFilesOnly',
                 useLibraryCodeForTypes = true,
               },
             },

@@ -10,34 +10,31 @@ return { -- Collection of various small independent plugins/modules
     require('mini.ai').setup { n_lines = 500 }
 
     -- Add/delete/replace surroundings (brackets, quotes, etc.)
-    require('mini.surround').setup()
+    require('mini.surround').setup({})
 
     require('mini.bufremove').setup()
 
     -- ... and there is more!
     --  Check out: https://github.com/echasnovski/mini.nvim
   end,
+  keys = {
+    {
+      '<leader>bd',
+      function()
+        local bd = require('mini.bufremove').delete
+        if vim.bo.modified then
+          local choice = vim.fn.confirm('Save changes to %q?', '&Yes\n&No\n&Cancel', 'Warning')
+          if choice == 1 then
+            vim.cmd.write()
+            bd(0)
+          elseif choice == 2 then
+            bd(0, true)
+          end
+        else
+          bd(0)
+        end
+      end,
+      desc = 'Delete buffer',
+    },
+  },
 }
--- return {
---   'echasnovski/mini.bufremove',
---   keys = {
---     {
---       '<leader>bd',
---       function()
---         local bd = require('mini.bufremove').delete
---         if vim.bo.modified then
---           local choice = vim.fn.confirm('Save changes to %q?', '&Yes\n&No\n&Cancel', 'Warning')
---           if choice == 1 then
---             vim.cmd.write()
---             bd(0)
---           elseif choice == 2 then
---             bd(0, true)
---           end
---         else
---           bd(0)
---         end
---       end,
---       desc = 'Delete buffer',
---     },
---   },
--- }
