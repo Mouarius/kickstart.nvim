@@ -58,7 +58,7 @@ return {
     close_if_last_window = true,
     popup_border_style = 'rounded',
     enable_git_status = true,
-    enabme_diagnostics = true,
+    enable_diagnostics = true,
     window = {
       filesystem = {
         bind_to_cwd = false,
@@ -82,8 +82,9 @@ return {
       },
     },
     filesystem = {
+      hijack_netrw_behavior = 'open_default',
       filtered_items = {
-        visible = false, -- when true, they will just be displayed differently than normal items
+        visible = true, -- when true, they will just be displayed differently than normal items
         never_show = { -- remains hidden even if visible is toggled to true, this overrides always_show
           '.DS_Store',
           '__pycache__',

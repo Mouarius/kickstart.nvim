@@ -91,10 +91,12 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Options keymap
 vim.keymap.set('n', '<leader>ow', function()
+  ---@diagnostic disable-next-line: undefined-field
   vim.opt.wrap = not vim.opt.wrap:get()
 end, { desc = 'Toggle line wrapping' })
 
 vim.keymap.set('n', '<leader>orn', function()
+  ---@diagnostic disable-next-line: undefined-field
   vim.opt.relativenumber = not vim.opt.relativenumber:get()
 end)
 
@@ -453,7 +455,8 @@ require('lazy').setup({
           {
             'rafamadriz/friendly-snippets',
             config = function()
-              require('luasnip.loaders.from_vscode').lazy_load()
+              require('luasnip.loaders.from_vscode').lazy_load { paths = { './snippets' }, override_priority = 2000 }
+              require('luasnip.loaders.from_vscode').lazy_load { default_priority = 0 }
             end,
           },
         },
@@ -556,7 +559,7 @@ require('lazy').setup({
         --  the list of additional_vim_regex_highlighting and disabled languages for indent.
         additional_vim_regex_highlighting = { 'ruby' },
       },
-      indent = { enable = true, disable = { 'ruby' } },
+      indent = { enable = false, disable = { 'ruby' } },
     },
     config = function(_, opts)
       -- [[ Configure Treesitter ]] See `:help nvim-treesitter`

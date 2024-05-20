@@ -10,13 +10,17 @@ return { -- Collection of various small independent plugins/modules
     require('mini.ai').setup { n_lines = 500 }
 
     -- Add/delete/replace surroundings (brackets, quotes, etc.)
-    require('mini.surround').setup({})
+    require('mini.surround').setup()
+
+    require('mini.move').setup()
 
     require('mini.bufremove').setup()
 
     -- ... and there is more!
     --  Check out: https://github.com/echasnovski/mini.nvim
   end,
+  version = false,
+  event= "VimEnter",
   keys = {
     {
       '<leader>bd',

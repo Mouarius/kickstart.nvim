@@ -65,6 +65,11 @@ return { -- Fuzzy Finder (files, lsp, etc)
             ['<C-f>'] = actions.preview_scrolling_down,
             ['<C-b>'] = actions.preview_scrolling_up,
           },
+          n = {
+            [' '] = actions.toggle_selection,
+            ['<C-o>'] = actions.add_selected_to_qflist,
+            ['<C-O>'] = actions.send_selected_to_qflist,
+          },
         },
       },
       -- pickers = {}
@@ -92,6 +97,7 @@ return { -- Fuzzy Finder (files, lsp, etc)
     vim.keymap.set('n', '<leader>fr', builtin.resume, { desc = '[F]ind [R]esume' })
     vim.keymap.set('n', '<leader>fo', builtin.oldfiles, { desc = '[F]ind Recent Files ("." for repeat)' })
     vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
+    vim.keymap.set('n', '<leader>fp', builtin.pickers, { desc = '[F]ind recent [P]ickers' })
 
     -- Slightly advanced example of overriding default behavior and theme
     vim.keymap.set('n', '<leader>/', function()

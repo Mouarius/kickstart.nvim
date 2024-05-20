@@ -1,0 +1,10 @@
+{
+  "const arrow function": {
+    "prefix": "car",
+    "body": [
+      "const ${1:name} = (${2:params}) => {",
+      " $3",
+      "}"
+    ]
+  }
+}

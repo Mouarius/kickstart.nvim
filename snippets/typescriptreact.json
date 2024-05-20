@@ -1,0 +1,10 @@
+{
+  "useCallback": {
+    "prefix": "ucb",
+    "body": [
+      "const ${1:name} = useCallback(($2) => {",
+      " $0",
+      "},[])"
+    ]
+  }
+}
