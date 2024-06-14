@@ -73,14 +73,15 @@ vim.opt.wrap = false
 
 -- [[ Styling ]]
 -- Diagnostics signs
---
 vim.fn.sign_define('DiagnosticSignError', { text = ' ', texthl = 'DiagnosticSignError' })
 vim.fn.sign_define('DiagnosticSignWarn', { text = ' ', texthl = 'DiagnosticSignWarn' })
 vim.fn.sign_define('DiagnosticSignInfo', { text = ' ', texthl = 'DiagnosticSignInfo' })
 vim.fn.sign_define('DiagnosticSignHint', { text = '󰌵', texthl = 'DiagnosticSignHint' })
 
--- Remaining options, toggle if needed
--- vim.opt.termguicolors = true
+-- Disable lsp virtual_text by default
+vim.diagnostic.config {
+  virtual_text = false,
+}
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
@@ -108,6 +109,25 @@ vim.keymap.set('n', 'çd', vim.diagnostic.goto_prev, { desc = 'Go to previous [D
 vim.keymap.set('n', 'àd', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagnostic message' })
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
+
+local function hide_diagnostics()
+  vim.diagnostic.config { -- https://neovim.io/doc/user/diagnostic.html
+    virtual_text = false,
+    signs = false,
+    underline = false,
+  }
+end
+
+local function show_diagnostics()
+  vim.diagnostic.config {
+    virtual_text = false,
+    signs = true,
+    underline = true,
+  }
+end
+
+vim.keymap.set('n', '<leader>dh', hide_diagnostics, { desc = '[D]iagnostics [H]idden' })
+vim.keymap.set('n', '<leader>dv', show_diagnostics, { desc = '[D]iagnostics [V]isible' })
 
 -- Disable arrow keys in normal mode
 vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
@@ -327,6 +347,7 @@ require('lazy').setup({
       capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
 
       local vue_language_server_path = vim.fn.getenv 'HOME' .. '/.local/share/nvim/mason/packages/vue-language-server/node_modules/@vue/language-server'
+      local ruff_path = vim.fn.getenv 'HOME' .. '/.local/share/nvim/mason/packages/ruff/venv/bin/ruff'
 
       -- Enable the following language servers
       --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
@@ -340,9 +361,6 @@ require('lazy').setup({
       --
 
       local servers = {
-        -- clangd = {},
-        -- gopls = {},
-        --
         cssls = {},
         astro = {},
         eslint = {},
@@ -391,7 +409,16 @@ require('lazy').setup({
             },
           },
         },
-        ruff_lsp = {},
+        ruff_lsp = {
+          on_attach = function(client, bufnr)
+            if client.name == 'ruff_lsp' then
+              client.server_capabilities.hoverProvider = false
+            end
+          end,
+          -- settings = {
+          --   path = ruff_path,
+          -- },
+        },
         lua_ls = {
           -- cmd = {...},
           -- filetypes = { ...},

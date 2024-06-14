@@ -1,6 +1,7 @@
 return {
   'FabijanZulj/blame.nvim',
+  opts = {},
   keys = {
-    { '<leader>a', '<cmd>ToggleBlame window<CR>', desc = 'Toggle git blame' },
+    { '<leader>a', '<cmd>BlameToggle window<CR>', desc = 'Toggle git blame (window)' },
   },
 }
