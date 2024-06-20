@@ -482,8 +482,9 @@ require('lazy').setup({
           {
             'rafamadriz/friendly-snippets',
             config = function()
-              require('luasnip.loaders.from_vscode').lazy_load { paths = { './snippets' }, override_priority = 2000 }
-              require('luasnip.loaders.from_vscode').lazy_load { default_priority = 0 }
+              -- require('luasnip.loaders.from_vscode').lazy_load { paths = { './snippets' }, override_priority = 2000 }
+              require('luasnip.loaders.from_vscode').lazy_load {}
+              require('luasnip.loaders.from_vscode').lazy_load { paths = { './snippets/' } }
             end,
           },
         },

@@ -1,27 +1,23 @@
 {
-  "name": "snippets",
+  "name": "marius-snippets",
+  "author": "mouarius",
+  "engines": {
+    "vscode": "^1.11.0"
+  },
   "contributes": {
     "snippets": [
       {
         "language": [
-          "all"
-        ],
-        "path": "./all.json"
-      },
-      {
-        "language": [
-          "javascript",
           "typescript",
-          "javascriptreact",
           "typescriptreact"
         ],
-        "path": "./typescript.json"
+        "path": "./snippets/typescript.json"
       },
       {
         "language": [
           "typescriptreact"
         ],
-        "path": "./typescriptreact.json"
+        "path": "./snippets/typescriptreact.json"
       }
     ]
   }
