@@ -8,7 +8,26 @@ return {
       lint.linters_by_ft = {
         -- markdown = { 'markdownlint' },
         htmldjango = { 'djlint' },
+        python = { 'ruff' },
+        javascript = { 'eslint_d' },
+        javascriptreact = { 'eslint_d' },
+        typescript = { 'eslint_d' },
+        typescriptreact = { 'eslint_d' },
       }
+
+      local eslint_d = require 'lint.linters.eslint_d'
+      -- eslint_d.env = { ['ESLINT_USE_FLAT_CONFIG'] = 'true' }
+      -- vim.notify("cwd" .. vim.fn.getcwd())
+      eslint_d.args = vim.tbl_extend('force', {
+        '--config',
+        function()
+          return vim.fn.getcwd() .. '/eslint.config.js'
+        end,
+      }, eslint_d.args)
+      -- eslint_d.env = { ['ESLINT_USE_FLAT_CONFIG'] = "true", ['PATH'] = os.getenv 'PATH' }
+      -- print(table.concat(eslint_d.args, '  '))
+      -- eslint_d.env = { ESLINT_USE_FLAT_CONFIG = 'true' }
+      -- eslint_d.args = vim.tbl_extend('keep', { '--debug' }, eslint_d.args)
 
       -- To allow other plugins to add linters to require('lint').linters_by_ft,
       -- instead set linters_by_ft like this:
@@ -45,10 +64,11 @@ return {
       -- Create autocommand which carries out the actual linting
       -- on the specified events.
       local lint_augroup = vim.api.nvim_create_augroup('lint', { clear = true })
+
       vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWritePost', 'InsertLeave' }, {
         group = lint_augroup,
         callback = function()
-          require('lint').try_lint()
+          lint.try_lint()
         end,
       })
     end,
