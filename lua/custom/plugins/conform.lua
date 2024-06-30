@@ -1,5 +1,6 @@
 return { -- Autoformat
   'stevearc/conform.nvim',
+  lazy = false,
   opts = {
     notify_on_error = false,
     -- format_on_save = function(bufnr)
@@ -29,7 +30,7 @@ return { -- Autoformat
     {
       '<leader>cf',
       function()
-        require('conform').format { async = false, lsp_fallback = true, timeout_ms = 500 }
+        require('conform').format { async = true, lsp_fallback = true }
       end,
       mode = '',
       desc = 'LSP: Format',
