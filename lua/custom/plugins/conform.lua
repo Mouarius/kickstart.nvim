@@ -16,7 +16,8 @@ return { -- Autoformat
       lua = { 'stylua' },
       -- Conform can also run multiple formatters sequentially
       python = { { 'ruff_format', 'black' } },
-      astro = { { 'prettierd', 'prettier' } },
+      astro = { { 'prettierd', 'prettier' }, 'eslint_d' },
+      json = { { 'prettierd', 'prettier' }, 'eslint_d' },
       --
       -- You can use a sub-list to tell conform to run *until* a formatter
       -- is found.
@@ -28,7 +29,7 @@ return { -- Autoformat
     {
       '<leader>cf',
       function()
-        require('conform').format { async = true, lsp_fallback = true }
+        require('conform').format { async = false, lsp_fallback = true, timeout_ms = 500 }
       end,
       mode = '',
       desc = 'LSP: Format',
