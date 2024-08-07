@@ -19,6 +19,7 @@ return { -- Autoformat
       python = { { 'ruff_format', 'black' } },
       astro = { { 'prettierd', 'prettier' }, 'eslint_d' },
       json = { { 'prettierd', 'prettier' }, 'eslint_d' },
+      htmldjango = { 'djlint' },
       --
       -- You can use a sub-list to tell conform to run *until* a formatter
       -- is found.

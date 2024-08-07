@@ -31,6 +31,14 @@ return {
         z = { fg = colors.yellow, bg = colors.base },
       },
     }
+
+    local lint_progress = function()
+      local linters = require('lint').get_running()
+      if #linters == 0 then
+        return '󰦕'
+      end
+      return '󱉶  ' .. table.concat(linters, ', ')
+    end
     lualine.setup {
       options = {
         theme = custom_theme,
@@ -58,7 +66,9 @@ return {
             diagnostics_color = { warn = { bg = colors.base, fg = colors.yellow } },
           },
         },
-        lualine_c = {},
+        lualine_c = {
+          { lint_progress },
+        },
         lualine_x = {},
         lualine_y = { 'filetype', 'progress' },
         lualine_z = {

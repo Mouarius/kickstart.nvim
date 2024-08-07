@@ -11,7 +11,7 @@
     "prefix": "rfct",
     "body": [
       "export interface ${TM_FILENAME_BASE}Props {\n$2\n}\n\n",
-      "export function ${TM_FILENAME_BASE}(props:${TM_FILENAME_BASE}Props) {",
+      "export const ${TM_FILENAME_BASE} = (props:${TM_FILENAME_BASE}Props) => {",
       " $0",
       " return <>$1</>",
       "}"

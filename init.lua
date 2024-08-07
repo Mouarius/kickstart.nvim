@@ -429,6 +429,10 @@ require('lazy').setup({
           },
         },
         pyright = {
+          root_dir = function()
+            -- Configure the root directory for my dev environment at work
+            return vim.fn.getcwd() .. "/mysite"
+          end,
           handlers = {
             ['textDocument/publishDiagnostics'] = function(err, result, ctx, config)
               -- In django, pyright keeps bothering me with "reportIncompatibleMethodOverride" errors with models Meta class
@@ -448,13 +452,50 @@ require('lazy').setup({
               analysis = {
                 diagnosticMode = 'openFilesOnly',
                 useLibraryCodeForTypes = true,
+                extraPaths = { '/Users/mariusmenault/dev/venv/hw' },
+                pythonPath = vim.fn.getenv("HOME") .. "/dev/venv/hw/bin/python"
               },
             },
             pyright = {
               disableOrganizeImports = true,
             },
+            venvPath = '/Users/mariusmenault/dev/venv',
+            venv = 'hw',
           },
         },
+        -- pyright = {
+        --   root_dir = function()
+        --     -- Configure the root directory for my dev environment at work
+        --     return vim.fn.getcwd() .. "/mysite"
+        --   end,
+        --   handlers = {
+        --     ['textDocument/publishDiagnostics'] = function(err, result, ctx, config)
+        --       -- In django, pyright keeps bothering me with "reportIncompatibleMethodOverride" errors with models Meta class
+        --       -- Those lines of code filters the diagnostics with those error codes from the pyright lsp output
+        --       local filtered_diagnostics = {}
+        --       for _, value in ipairs(result.diagnostics) do
+        --         if value ~= nil and value.code ~= 'reportIncompatibleVariableOverride' and value.code ~= 'reportIncompatibleMethodOverride' then
+        --           table.insert(filtered_diagnostics, value)
+        --         end
+        --       end
+        --       result.diagnostics = filtered_diagnostics
+        --       return vim.lsp.diagnostic.on_publish_diagnostics(err, result, ctx, config)
+        --     end,
+        --   },
+        --   settings = {
+        --     python = {
+        --       analysis = {
+        --         diagnosticMode = 'openFilesOnly',
+        --         useLibraryCodeForTypes = true,
+        --         extraPaths = { "/Users/mariusmenault/dev/venv/hw"}
+        --         -- pythonPath = vim.fn.getenv("HOME") .. "/dev/venv/hw/bin/python"
+        --       },
+        --     },
+        --     pyright = {
+        --       disableOrganizeImports = true,
+        --     },
+        --   },
+        -- },
         ruff_lsp = {
           on_attach = function(client, bufnr)
             if client.name == 'ruff_lsp' then
