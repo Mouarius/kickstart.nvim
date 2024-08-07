@@ -11,7 +11,6 @@ return {
   'mfussenegger/nvim-dap',
   -- NOTE: And you can specify dependencies as well
   dependencies = {
-    'neovim/nvim-lspconfig',
     -- Creates a beautiful debugger UI
     'rcarriga/nvim-dap-ui',
 
@@ -45,7 +44,9 @@ return {
       -- online, please don't ask me how to install them :)
       ensure_installed = {
         -- Update this to ensure that you have the debuggers for the langs you want
-        'debugpy',
+        'python',
+        'typescript',
+        'pwa-node',
       },
     }
 
@@ -61,27 +62,25 @@ return {
 
     -- Dap UI setup
     -- For more information, see |:help nvim-dap-ui|
-    -- dapui.setup {
-    --   -- Set icons to characters that are more likely to work in every terminal.
-    --   --    Feel free to remove or use ones that you like more! :)
-    --   --    Don't feel like these are good choices.
-    --   icons = { expanded = '▾', collapsed = '▸', current_frame = '*' },
-    --   controls = {
-    --     icons = {
-    --       pause = '⏸',
-    --       play = '▶',
-    --       step_into = '⏎',
-    --       step_over = '⏭',
-    --       step_out = '⏮',
-    --       step_back = 'b',
-    --       run_last = '▶▶',
-    --       terminate = '⏹',
-    --       disconnect = '⏏',
-    --     },
-    --   },
-    -- }
-    ---@diagnostic disable-next-line: missing-fields
-    require('dapui').setup {}
+    dapui.setup {
+      -- Set icons to characters that are more likely to work in every terminal.
+      --    Feel free to remove or use ones that you like more! :)
+      --    Don't feel like these are good choices.
+      icons = { expanded = '▾', collapsed = '▸', current_frame = '*' },
+      controls = {
+        icons = {
+          pause = '⏸',
+          play = '▶',
+          step_into = '⏎',
+          step_over = '⏭',
+          step_out = '⏮',
+          step_back = 'b',
+          run_last = '▶▶',
+          terminate = '⏹',
+          disconnect = '⏏',
+        },
+      },
+    }
 
     -- Toggle to see last session result. Without this, you can't see session output in case of unhandled exception.
     vim.keymap.set('n', '<F7>', dapui.toggle, { desc = 'Debug: See last session result.' })
@@ -90,15 +89,34 @@ return {
     dap.listeners.before.event_terminated['dapui_config'] = dapui.close
     dap.listeners.before.event_exited['dapui_config'] = dapui.close
 
-    require('dap-python').setup()
+    require('dap-python').setup '/Users/mariusmenault/dev/venv/hw/bin/python3.8'
     vim.fn.findfile 'manage.py'
+    dap.set_log_level 'DEBUG'
+
+    dap.adapters['pwa-node'] = {
+      type = 'server',
+      host = 'localhost',
+      port = '${port}',
+      executable = {
+        command = 'node',
+        -- 💀 Make sure to update this path to point to your installation
+        args = { '/Users/mariusmenault/dev/tools/js-debug/src/dapDebugServer.js', '${port}' },
+      },
+    }
+
+    dap.configurations['typescript'] = {
+      { type = 'pwa-node', request = 'launch', name = 'Launch file', program = '${file}', cwd = '${workspaceFolder}' },
+    }
 
     if utils.get_python_venv() then
-      local django_dir = require('lspconfig.util').root_pattern('pyproject.toml', 'requirements.txt')(vim.fn.getcwd())
+      local django_dir = require('lspconfig.util').root_pattern 'manage.py'(vim.fn.getcwd() .. '/mysite')
+      print(django_dir)
       if django_dir then
         table.insert(dap.configurations.python, {
           type = 'python',
           request = 'launch',
+          justMyCode = true,
+          django = true,
           name = 'Django (launch)',
           program = django_dir .. '/manage.py',
           args = { 'runserver', '--noreload' },
