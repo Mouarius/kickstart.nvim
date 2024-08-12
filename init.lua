@@ -3,6 +3,8 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
+vim.o.termguicolors = true
+
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
 
@@ -255,7 +257,19 @@ require('lazy').setup({
       'WhoIsSethDaniel/mason-tool-installer.nvim',
 
       -- Useful status updates for LSP.
-      { 'j-hui/fidget.nvim', opts = {} },
+      {
+        'j-hui/fidget.nvim',
+        opts = {
+
+          -- Options related to notification subsystem
+          notification = {
+            -- Options related to the notification window and buffer
+            window = {
+              winblend = 0, -- Background color opacity in the notification window
+            },
+          },
+        },
+      },
 
       -- `neodev` configures Lua LSP for your Neovim config, runtime and plugins
       -- used for completion, annotations and signatures of Neovim apis
@@ -409,18 +423,6 @@ require('lazy').setup({
       local servers = {
         cssls = {},
         astro = {},
-        -- eslint = {},
-        tsserver = {
-          init_options = {
-            plugins = {
-              {
-                name = '@vue/typescript-plugin',
-                location = vue_language_server_path,
-                languages = { 'vue' },
-              },
-            },
-          },
-        },
         volar = {
           init_options = {
             vue = {
@@ -431,7 +433,7 @@ require('lazy').setup({
         pyright = {
           root_dir = function()
             -- Configure the root directory for my dev environment at work
-            return vim.fn.getcwd() .. "/mysite"
+            return vim.fn.getcwd() .. '/mysite'
           end,
           handlers = {
             ['textDocument/publishDiagnostics'] = function(err, result, ctx, config)
@@ -453,7 +455,7 @@ require('lazy').setup({
                 diagnosticMode = 'openFilesOnly',
                 useLibraryCodeForTypes = true,
                 extraPaths = { '/Users/mariusmenault/dev/venv/hw' },
-                pythonPath = vim.fn.getenv("HOME") .. "/dev/venv/hw/bin/python"
+                pythonPath = vim.fn.getenv 'HOME' .. '/dev/venv/hw/bin/python',
               },
             },
             pyright = {
@@ -461,6 +463,18 @@ require('lazy').setup({
             },
             venvPath = '/Users/mariusmenault/dev/venv',
             venv = 'hw',
+          },
+        },
+        eslint = {},
+        tsserver = {
+          init_options = {
+            plugins = {
+              {
+                name = '@vue/typescript-plugin',
+                location = vue_language_server_path,
+                languages = { 'vue' },
+              },
+            },
           },
         },
         -- pyright = {
