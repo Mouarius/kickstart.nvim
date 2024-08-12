@@ -16,23 +16,24 @@ return { -- Autoformat
     formatters_by_ft = {
       lua = { 'stylua' },
       -- Conform can also run multiple formatters sequentially
-      python = { { 'ruff_format', 'black' } },
-      astro = { { 'prettierd', 'prettier' }, 'eslint_d' },
-      json = { { 'prettierd', 'prettier' }, 'eslint_d' },
+      python = { 'ruff_format', 'black' },
+      astro = { 'prettierd',},
+      json = { 'prettierd', },
+      htmldjango = { 'djlint' },
       --
       -- You can use a sub-list to tell conform to run *until* a formatter
       -- is found.
-      javascript = { { 'prettierd', 'prettier' }, 'eslint_d' },
-      javascriptreact = { { 'prettierd', 'prettier' }, 'eslint_d' },
-      typescript = { { 'prettierd', 'prettier' }, 'eslint_d' },
-      typescriptreact = { { 'prettierd', 'prettier' }, 'eslint_d' },
+      javascript = { 'prettierd' },
+      javascriptreact = { 'prettierd', },
+      typescript = { 'prettierd',},
+      typescriptreact = { 'prettierd',},
     },
   },
   keys = {
     {
       '<leader>cf',
       function()
-        require('conform').format { async = true, lsp_fallback = true }
+        return require('conform').format { async = true, lsp_fallback = true, lsp_format = 'fallback', quiet = true }
       end,
       mode = '',
       desc = 'LSP: Format',

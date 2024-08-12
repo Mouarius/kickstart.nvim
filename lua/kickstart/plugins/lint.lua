@@ -6,13 +6,13 @@ return {
     config = function()
       local lint = require 'lint'
       lint.linters_by_ft = {
-        -- markdown = { 'markdownlint' },
+        -- python = { 'mypy' },
         htmldjango = { 'djlint' },
         python = { 'ruff' },
-        javascript = { 'eslint_d' },
-        javascriptreact = { 'eslint_d' },
-        typescript = { 'eslint_d' },
-        typescriptreact = { 'eslint_d' },
+        javascript = { 'eslint' },
+        javascriptreact = { 'eslint' },
+        typescript = { 'eslint' },
+        typescriptreact = { 'eslint' },
       }
 
       local eslint_d = require 'lint.linters.eslint_d'
@@ -24,10 +24,6 @@ return {
           return vim.fn.getcwd() .. '/eslint.config.js'
         end,
       }, eslint_d.args)
-      -- eslint_d.env = { ['ESLINT_USE_FLAT_CONFIG'] = "true", ['PATH'] = os.getenv 'PATH' }
-      -- print(table.concat(eslint_d.args, '  '))
-      -- eslint_d.env = { ESLINT_USE_FLAT_CONFIG = 'true' }
-      -- eslint_d.args = vim.tbl_extend('keep', { '--debug' }, eslint_d.args)
 
       -- To allow other plugins to add linters to require('lint').linters_by_ft,
       -- instead set linters_by_ft like this:
