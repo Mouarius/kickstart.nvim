@@ -33,7 +33,7 @@ return { -- Autoformat
     {
       '<leader>cf',
       function()
-        return require('conform').format { async = true, lsp_fallback = true, lsp_format = 'fallback', quiet = true }
+        return require('conform').format { async = true, lsp_fallback = true, lsp_format = 'first', quiet = true }
       end,
       mode = '',
       desc = 'LSP: Format',
