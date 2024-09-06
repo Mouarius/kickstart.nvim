@@ -409,6 +409,15 @@ require('lazy').setup({
       local vue_language_server_path = vim.fn.getenv 'HOME' .. '/.local/share/nvim/mason/packages/vue-language-server/node_modules/@vue/language-server'
       local ruff_path = vim.fn.getenv 'HOME' .. '/.local/share/nvim/mason/packages/ruff/venv/bin/ruff'
 
+      local pre_commit_config = vim.fn.findfile 'pre-commit-config.yaml'
+      -- TODO : Configure ruff version fetching here
+      if pre_commit_config then
+        -- local lyaml = require "lyalm"
+        -- local config_file_content = vim.fn.readfile(pre_commit_config)
+        -- local config_data = lyml.load(config_file_content)
+        -- print(config_data)
+      end
+
       -- Enable the following language servers
       --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
       --
@@ -465,6 +474,7 @@ require('lazy').setup({
             venv = 'hw',
           },
         },
+        tailwindcss = {},
         eslint = {},
         tsserver = {
           init_options = {
@@ -477,60 +487,19 @@ require('lazy').setup({
             },
           },
         },
-        -- pyright = {
-        --   root_dir = function()
-        --     -- Configure the root directory for my dev environment at work
-        --     return vim.fn.getcwd() .. "/mysite"
-        --   end,
-        --   handlers = {
-        --     ['textDocument/publishDiagnostics'] = function(err, result, ctx, config)
-        --       -- In django, pyright keeps bothering me with "reportIncompatibleMethodOverride" errors with models Meta class
-        --       -- Those lines of code filters the diagnostics with those error codes from the pyright lsp output
-        --       local filtered_diagnostics = {}
-        --       for _, value in ipairs(result.diagnostics) do
-        --         if value ~= nil and value.code ~= 'reportIncompatibleVariableOverride' and value.code ~= 'reportIncompatibleMethodOverride' then
-        --           table.insert(filtered_diagnostics, value)
-        --         end
-        --       end
-        --       result.diagnostics = filtered_diagnostics
-        --       return vim.lsp.diagnostic.on_publish_diagnostics(err, result, ctx, config)
-        --     end,
-        --   },
-        --   settings = {
-        --     python = {
-        --       analysis = {
-        --         diagnosticMode = 'openFilesOnly',
-        --         useLibraryCodeForTypes = true,
-        --         extraPaths = { "/Users/mariusmenault/dev/venv/hw"}
-        --         -- pythonPath = vim.fn.getenv("HOME") .. "/dev/venv/hw/bin/python"
-        --       },
-        --     },
-        --     pyright = {
-        --       disableOrganizeImports = true,
-        --     },
-        --   },
-        -- },
         ruff_lsp = {
           on_attach = function(client, bufnr)
             if client.name == 'ruff_lsp' then
               client.server_capabilities.hoverProvider = false
             end
           end,
-          -- settings = {
-          --   path = ruff_path,
-          -- },
         },
         lua_ls = {
-          -- cmd = {...},
-          -- filetypes = { ...},
-          -- capabilities = {},
           settings = {
             Lua = {
               completion = {
                 callSnippet = 'Replace',
               },
-              -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
-              -- diagnostics = { disable = { 'missing-fields' } },
             },
           },
         },

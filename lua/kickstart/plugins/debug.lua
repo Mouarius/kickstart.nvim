@@ -111,7 +111,6 @@ return {
 
     if utils.get_python_venv() then
       local django_dir = require('lspconfig.util').root_pattern 'manage.py'(vim.fn.getcwd() .. '/mysite')
-      print(django_dir)
       if django_dir then
         table.insert(dap.configurations.python, {
           type = 'python',
