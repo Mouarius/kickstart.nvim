@@ -127,7 +127,6 @@ local function show_diagnostics()
     underline = true,
   }
 end
-
 vim.keymap.set('n', '<leader>dh', hide_diagnostics, { desc = '[D]iagnostics [H]idden' })
 vim.keymap.set('n', '<leader>dv', show_diagnostics, { desc = '[D]iagnostics [V]isible' })
 
