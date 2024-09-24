@@ -63,6 +63,9 @@ vim.opt.expandtab = true
 vim.opt.tabstop = 2
 vim.opt.shiftwidth = 2
 
+-- Visual block mode doesn't stop at the end of a line and keeps being a block
+vim.opt.virtualedit = 'block'
+
 -- Preview substitutions live, as you type!
 vim.opt.inccommand = 'split'
 
