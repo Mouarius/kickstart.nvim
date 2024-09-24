@@ -1,7 +1,6 @@
 return { -- LSP Configuration & Plugins
   'neovim/nvim-lspconfig',
   dependencies = {
-    
     -- Automatically install LSPs and related tools to stdpath for Neovim
     { 'williamboman/mason.nvim', config = true }, -- NOTE: Must be loaded before dependants
     'williamboman/mason-lspconfig.nvim',
@@ -154,16 +153,8 @@ return { -- LSP Configuration & Plugins
     capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
 
     local vue_language_server_path = vim.fn.getenv 'HOME' .. '/.local/share/nvim/mason/packages/vue-language-server/node_modules/@vue/language-server'
-    local ruff_path = vim.fn.getenv 'HOME' .. '/.local/share/nvim/mason/packages/ruff/venv/bin/ruff'
 
-    local pre_commit_config = vim.fn.findfile 'pre-commit-config.yaml'
     -- TODO : Configure ruff version fetching here
-    if pre_commit_config then
-      -- local lyaml = require "lyalm"
-      -- local config_file_content = vim.fn.readfile(pre_commit_config)
-      -- local config_data = lyml.load(config_file_content)
-      -- print(config_data)
-    end
 
     -- Enable the following language servers
     --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
