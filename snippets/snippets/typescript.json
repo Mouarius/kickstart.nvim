@@ -6,5 +6,19 @@
       " $3",
       "}"
     ]
+  },
+
+  "console log variable": {
+    "prefix": "clo",
+    "body": [
+      "console.log(\"${1:variable}\", ${1:variable})"
+    ]
+  },
+
+  "console log message": {
+    "prefix": "clm",
+    "body": [
+      "console.log(\"$1\")"
+    ]
   }
 }
