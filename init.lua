@@ -480,7 +480,7 @@ require('lazy').setup({
         },
         tailwindcss = {},
         eslint = {},
-        tsserver = {
+        ts_ls = {
           init_options = {
             plugins = {
               {
