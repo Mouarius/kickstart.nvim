@@ -1,15 +1,5 @@
--- debug.lua
---
--- Shows how to use the DAP plugin to debug your code.
---
--- Primarily focused on configuring the debugger for Go, but can
--- be extended to other languages as well. That's why it's called
--- kickstart.nvim and not kitchen-sink.nvim ;)
-
 return {
-  -- NOTE: Yes, you can install new plugins here!
   'mfussenegger/nvim-dap',
-  -- NOTE: And you can specify dependencies as well
   dependencies = {
     -- Creates a beautiful debugger UI
     'rcarriga/nvim-dap-ui',
@@ -22,9 +12,13 @@ return {
     'jay-babu/mason-nvim-dap.nvim',
 
     'theHamsta/nvim-dap-virtual-text',
-    -- Add your own debuggers here
-    'leoluz/nvim-dap-go',
-    'mfussenegger/nvim-dap-python',
+    {
+
+      'mfussenegger/nvim-dap-python',
+      enabled = function()
+        return require('custom.dap.config').handler_active['python']
+      end,
+    },
   },
   keys = function(_, keys)
     local dap = require 'dap'
@@ -51,26 +45,17 @@ return {
   config = function()
     local dap = require 'dap'
     local dapui = require 'dapui'
+    local dap_config = require 'custom.dap.config'
     local utils = require 'custom.utils'
 
+    require('mason').setup()
     require('mason-nvim-dap').setup {
       -- Makes a best effort to setup the various debuggers with
       -- reasonable debug configurations
       automatic_installation = true,
-      automatic_installation = true,
-
-      -- You can provide additional configuration to the handlers,
-      -- see mason-nvim-dap README for more information
-      handlers = {},
-
       -- You'll need to check that you have the required things installed
       -- online, please don't ask me how to install them :)
-      ensure_installed = {
-        -- Update this to ensure that you have the debuggers for the langs you want
-        'python',
-        'typescript',
-        'pwa-node',
-      },
+      ensure_installed = dap_config.mason_ensure_installed,
     }
 
     -- Dap UI setup
@@ -99,38 +84,8 @@ return {
     dap.listeners.before.event_terminated['dapui_config'] = dapui.close
     dap.listeners.before.event_exited['dapui_config'] = dapui.close
 
-    require('dap-python').setup '/Users/mariusmenault/dev/venv/hw/bin/python3.8'
-    vim.fn.findfile 'manage.py'
-    dap.set_log_level 'DEBUG'
-
-    dap.adapters['pwa-node'] = {
-      type = 'server',
-      host = 'localhost',
-      port = '${port}',
-      executable = {
-        command = 'node',
-        -- 💀 Make sure to update this path to point to your installation
-        args = { '/Users/mariusmenault/dev/tools/js-debug/src/dapDebugServer.js', '${port}' },
-      },
-    }
-
-    dap.configurations['typescript'] = {
-      { type = 'pwa-node', request = 'launch', name = 'Launch file', program = '${file}', cwd = '${workspaceFolder}' },
-    }
-
-    if utils.get_python_venv() then
-      local django_dir = require('lspconfig.util').root_pattern 'manage.py'(vim.fn.getcwd() .. '/mysite')
-      if django_dir then
-        table.insert(dap.configurations.python, {
-          type = 'python',
-          request = 'launch',
-          justMyCode = true,
-          django = true,
-          name = 'Django (launch)',
-          program = django_dir .. '/manage.py',
-          args = { 'runserver', '--noreload' },
-        })
-      end
+    if dap_config.handler_active.python then
+      require('custom.dap.python').setup()
     end
   end,
 }

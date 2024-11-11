@@ -478,6 +478,82 @@ require('lazy').setup({
             venv = 'hw',
           },
         },
+        ruff = {
+          trace = 'messages',
+          init_options = {
+            settings = {
+              logLevel = 'debug',
+            },
+          },
+          on_attach = function(client, bufnr)
+            if client.name == 'ruff' then
+              client.server_capabilities.hoverProvider = false
+            end
+          end,
+        },
+        -- WORK IN PROGRESS TO ADD REFACTORING CODE ACTIONS TO PYTHON
+        -- pylsp = {
+        --   settings = {
+        --     pylsp = {
+        --       plugins = {
+        --         autopep8 = {
+        --           enabled = false,
+        --         },
+        --         jedi_completion = {
+        --           enabled = false,
+        --         },
+        --         jedi_definition = {
+        --           enabled = false
+        --         },
+        --         jedi_hover = {
+        --           enabled = false
+        --         },
+        --         jedi_reference = {
+        --           enabled = false
+        --         },
+        --         jedi_signature_help = {
+        --           enabled = false
+        --         },
+        --         jedi_symbols = {
+        --           enabled = false
+        --         },
+        --         jedi_rename = {
+        --           enabled = false
+        --         },
+        --         mccabe = {
+        --           enabled = false
+        --         },
+        --         preload = {
+        --           enabled = false
+        --         },
+        --         pycodestyle = {
+        --           enabled = false
+        --         },
+        --         pydocstyle = {
+        --           enabled = false
+        --         },
+        --         pyflakes = {
+        --           enabled = false
+        --         },
+        --         pylint = {
+        --           enabled = false
+        --         },
+        --         rope_autoimport = {
+        --           enabled = false
+        --         },
+        --         rope_rename = {
+        --           enabled = false
+        --         },
+        --         yapf = {
+        --           enabled = false
+        --         },
+        --         pylsp_rope = {
+        --           rename = true,
+        --         },
+        --       },
+        --     },
+        --   },
+        -- },
         tailwindcss = {},
         eslint = {},
         ts_ls = {
@@ -490,13 +566,6 @@ require('lazy').setup({
               },
             },
           },
-        },
-        ruff_lsp = {
-          on_attach = function(client, bufnr)
-            if client.name == 'ruff_lsp' then
-              client.server_capabilities.hoverProvider = false
-            end
-          end,
         },
         lua_ls = {
           settings = {
