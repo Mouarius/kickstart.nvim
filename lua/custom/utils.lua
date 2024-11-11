@@ -11,18 +11,17 @@ M.load_mappings = function(mappings)
 end
 
 M.get_python_venv = function()
-  return os.getenv 'VIRTUAL_ENV'
+  return vim.env.VIRTUAL_ENV
 end
 
 M.get_python_executable = function()
-  local venv_path = os.getenv 'VIRTUAL_ENV'
+  local venv_path = M.get_python_venv()
 
   if venv_path ~= nil then
     return venv_path .. '/bin/python3'
   end
 
-  return vim.g.python3_host_prog
+  return vim.fn.exepath("python3")
 end
-
 
 return M
