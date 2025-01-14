@@ -1,10 +1,10 @@
-return {
+local config = {
   'nvim-neo-tree/neo-tree.nvim',
   branch = 'v3.x',
   cmd = 'Neotree',
   keys = {
     {
-      '<C-n>',
+      '&',
       function()
         require('neo-tree.command').execute { toggle = true, reveal = true, position = 'float' }
       end,
@@ -117,3 +117,5 @@ return {
     },
   },
 }
+return {}
+-- return config
