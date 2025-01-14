@@ -63,6 +63,18 @@ vim.keymap.set('n', '<leader>tf', '<cmd>tabnew %<CR>', { desc = 'Open current bu
 vim.keymap.set('n', '<leader>tn', '<cmd>tabnext<CR>', { desc = 'Go to next tab' })
 vim.keymap.set('n', '<leader>tp', '<cmd>tabprev<CR>', { desc = 'Go to previous tab' })
 
+vim.keymap.set('n', '<leader>cfp', function()
+  local file_path = vim.api.nvim_buf_get_name(0)
+  vim.fn.setreg('+', file_path)
+  vim.notify 'Copied file path to clipboard!'
+end, { desc = '[y]ank [f]ile [p]ath' })
+
+vim.keymap.set('n', '<leader>cfn', function()
+  local file_name = vim.fn.expand '%:t'
+  vim.fn.setreg('+', file_name)
+  vim.notify 'Copied file name to clipboard!'
+end, { desc = '[y]ank [f]ile [n]ame' })
+
 -- Resize window using <ctrl> arrow keys
 vim.keymap.set('n', '<C-Up>', '<cmd>resize +2<cr>', { desc = 'Increase window height' })
 vim.keymap.set('n', '<C-Down>', '<cmd>resize -2<cr>', { desc = 'Decrease window height' })

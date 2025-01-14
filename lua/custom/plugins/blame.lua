@@ -1,6 +1,8 @@
 return {
   'FabijanZulj/blame.nvim',
-  opts = {},
+  config = function(opts)
+    require("blame").setup(opts)
+  end,
   keys = {
     { '<leader>a', '<cmd>BlameToggle window<CR>', desc = 'Toggle git blame (window)' },
   },

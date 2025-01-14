@@ -25,5 +25,9 @@ require('lazy').setup {
     { import = 'kickstart.plugins.lint' },
   },
   install = { coloscheme = { 'catppuccin' } },
-  checker = { enabled = true },
+  checker = { enabled = false },
+  change_detection = {
+    enabled = true,
+    notify = false,
+  },
 }
