@@ -14,6 +14,10 @@ function M.setup()
     if manage_py_path then
       local config = {
         type = 'python',
+        -- python = { python_path },
+        -- pythonPath = function()
+        --   return python_path
+        -- end,
         request = 'launch',
         cwd = mysite_dir,
         test_runner = 'pytest',

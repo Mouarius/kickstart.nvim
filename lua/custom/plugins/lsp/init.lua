@@ -209,15 +209,11 @@ return { -- LSP Configuration & Plugins
             analysis = {
               diagnosticMode = 'openFilesOnly',
               useLibraryCodeForTypes = true,
-              extraPaths = { '/Users/mariusmenault/dev/venv/hw' },
-              pythonPath = vim.fn.getenv 'HOME' .. '/dev/venv/hw/bin/python',
             },
           },
           pyright = {
             disableOrganizeImports = true,
           },
-          venvPath = '/Users/mariusmenault/dev/venv',
-          venv = 'hw',
         },
       },
       ruff = {
@@ -297,11 +293,11 @@ return { -- LSP Configuration & Plugins
       --   },
       -- },
       tailwindcss = {},
-      eslint_d = {
-        settings = {
-          workingDirectories = { mode = 'auto' },
-        },
-      },
+      -- eslint_d = {
+      --   settings = {
+      --     workingDirectories = { mode = 'auto' },
+      --   },
+      -- },
       ts_ls = {
         init_options = {
           plugins = {
