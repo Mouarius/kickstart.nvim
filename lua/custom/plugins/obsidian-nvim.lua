@@ -12,12 +12,9 @@ return {
   --   "BufNewFile path/to/my-vault/*.md",
   -- },
   dependencies = {
-    -- Required.
     'nvim-lua/plenary.nvim',
     'nvim-telescope/telescope.nvim',
     'nvim-treesitter/nvim-treesitter',
-
-    -- see below for full list of optional dependencies 👇
   },
   opts = {
     workspaces = {
@@ -26,7 +23,21 @@ return {
         path = '~/vaults/personal',
       },
     },
-
-    -- see below for full list of options 👇
+    templates = {
+      folder = 'Template',
+    },
+    daily_notes = {
+      folder = 'Daily',
+      template = 'Daily',
+    },
+  },
+  config = function(_, opts)
+    local obsidian = require 'obsidian'
+    obsidian.setup(opts)
+    -- vim.keymap.set('n', '<S-K>', '<cmd>ObsidianToggleCheckbox<cr>$a', { desc = 'Create checkbox and insert' })
+  end,
+  keys = {
+    { '<leader>nt', '<cmd>ObsidianToday<cr>', 'Open obsidian [T]oday' },
+    { '<leader>ny', '<cmd>ObsidianYesterday<cr>', 'Open obsidian [Y]esterday' },
   },
 }
