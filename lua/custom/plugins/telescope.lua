@@ -20,24 +20,24 @@ return { -- Fuzzy Finder (files, lsp, etc)
     { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
   },
   config = function()
-     -- Telescope is a fuzzy finder that comes with a lot of different things that
-      -- it can fuzzy find! It's more than just a "file finder", it can search
-      -- many different aspects of Neovim, your workspace, LSP, and more!
-      --
-      -- The easiest way to use Telescope, is to start by doing something like:
-      --  :Telescope help_tags
-      --
-      -- After running this command, a window will open up and you're able to
-      -- type in the prompt window. You'll see a list of `help_tags` options and
-      -- a corresponding preview of the help.
-      --
-      -- Two important keymaps to use while in Telescope are:
-      --  - Insert mode: <c-/>
-      --  - Normal mode: ?
-      --
-      -- This opens a window that shows you all of the keymaps for the current
-      -- Telescope picker. This is really useful to discover what Telescope can
-      -- do as well as how to actually do it!
+    -- Telescope is a fuzzy finder that comes with a lot of different things that
+    -- it can fuzzy find! It's more than just a "file finder", it can search
+    -- many different aspects of Neovim, your workspace, LSP, and more!
+    --
+    -- The easiest way to use Telescope, is to start by doing something like:
+    --  :Telescope help_tags
+    --
+    -- After running this command, a window will open up and you're able to
+    -- type in the prompt window. You'll see a list of `help_tags` options and
+    -- a corresponding preview of the help.
+    --
+    -- Two important keymaps to use while in Telescope are:
+    --  - Insert mode: <c-/>
+    --  - Normal mode: ?
+    --
+    -- This opens a window that shows you all of the keymaps for the current
+    -- Telescope picker. This is really useful to discover what Telescope can
+    -- do as well as how to actually do it!
 
     -- [[ Configure Telescope ]]
     -- See `:help telescope` and `:help telescope.setup()`
@@ -51,6 +51,9 @@ return { -- Fuzzy Finder (files, lsp, etc)
       local action_state = require 'telescope.actions.state'
       local line = action_state.get_current_line()
       require('telescope.builtin').find_files { hidden = true, default_text = line }
+    end
+    local find_files_no_ignore_with_hidden = function()
+      require('telescope.builtin').find_files { hidden = false, no_ignore = true }
     end
     require('telescope').setup {
       -- You can put your default mappings / updates / etc. in here
@@ -73,10 +76,6 @@ return { -- Fuzzy Finder (files, lsp, etc)
         },
         mappings = {
           i = {
-            ['î'] = find_files_no_ignore,
-            ['Ì'] = find_files_with_hidden,
-            ['<M-i>'] = find_files_no_ignore,
-            ['<M-I>'] = find_files_with_hidden,
             ['<C-j>'] = actions.move_selection_next,
             ['<C-k>'] = actions.move_selection_previous,
             ['<C-Down>'] = actions.cycle_history_next,
@@ -108,7 +107,9 @@ return { -- Fuzzy Finder (files, lsp, etc)
     local builtin = require 'telescope.builtin'
     vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = '[F]ind [H]elp' })
     vim.keymap.set('n', '<leader>fk', builtin.keymaps, { desc = '[F]ind [K]eymaps' })
-    vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = '[F]ind [F]iles' })
+    vim.keymap.set('n', '<leader>ff', function()
+      builtin.find_files {  }
+    end, { desc = '[F]ind [F]iles' })
     vim.keymap.set('n', '<leader>fS', builtin.builtin, { desc = '[F]ind [S]elect Telescope' })
     vim.keymap.set('n', '<leader>fw', builtin.grep_string, { desc = '[F]ind current [W]ord' })
     vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = '[F]ind by [G]rep' })

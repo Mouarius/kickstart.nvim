@@ -22,7 +22,7 @@ return {
     }
   end,
   keys = {
-    { '<leader>n', '<cmd>Scratch<cr>', desc = '[n]ew scratch file' },
+    { '<leader>ns', '<cmd>Scratch<cr>', desc = '[n]ew scratch file' },
     { '<leader>fs', '<cmd>ScratchOpenFzf<cr>', desc = '[f]ind in [s]cratch files' },
   },
 }
