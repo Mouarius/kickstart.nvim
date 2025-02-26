@@ -5,11 +5,13 @@ return {
   opts = {
     keymaps = {
       ['<C-S>'] = { 'actions.select', opts = { vertical = true } },
-      ['<C-H>'] = { 'actions.select', opts = { horizontal = true } },
+      ['<C-h>'] = false,
+      -- ['<C-H>'] = { 'actions.select', opts = { horizontal = true } },
       ['<C-t>'] = { 'actions.select', opts = { tab = true } },
       ['<C-p>'] = 'actions.preview',
       ['<C-c>'] = { 'actions.close', mode = 'n' },
-      ['<C-L>'] = 'actions.refresh',
+      ['<C-l>'] = false,
+      -- ['<C-L>'] = 'actions.refresh',
       ['-'] = { 'actions.parent', mode = 'n' },
       ['_'] = { 'actions.open_cwd', mode = 'n' },
       ['<'] = { 'actions.cd', mode = 'n' },
