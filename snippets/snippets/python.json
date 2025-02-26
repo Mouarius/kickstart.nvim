@@ -1,0 +1,14 @@
+{
+  "print variable": {
+    "prefix": "clo",
+    "body": [
+      "print(\"${1:variable}\", ${1:variable})"
+    ]
+  },
+  "print message": {
+    "prefix": "clm",
+    "body": [
+      "print(\"$1\")"
+    ]
+  },
+}

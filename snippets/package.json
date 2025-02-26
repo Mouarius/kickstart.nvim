@@ -19,6 +19,18 @@
         ],
         "path": "./snippets/typescriptreact.json"
       }
+      {
+        "language": [
+          "python"
+        ],
+        "path": "./snippets/python.json"
+      }
+      {
+        "language": [
+          "htmldjango", "html"
+        ],
+        "path": "./snippets/htmldjango.json"
+      }
     ]
   }
 }
