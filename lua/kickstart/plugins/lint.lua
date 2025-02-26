@@ -10,8 +10,10 @@ return {
         htmldjango = { 'djlint' },
       }
 
+      local dmypy = lint.linters.dmypy
+      dmypy.cwd = vim.fn.getcwd() .."/mysite"
       local slow_linters_by_ft = {
-        python = { 'mypy' },
+        python = { },
       }
 
       -- local eslint_d = require 'lint.linters.eslint_d'
@@ -45,19 +47,22 @@ return {
       vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWritePost', 'InsertLeave' }, {
         group = lint_augroup,
         callback = function()
-          lint.linters_by_ft = fast_linters_by_ft
-          lint.try_lint()
+          if vim.opt_local.modifiable:get() then
+            lint.linters_by_ft = fast_linters_by_ft
+            lint.try_lint()
+          end
         end,
       })
 
-      -- SLOW LINTERS
-      -- vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWritePost' }, {
-      --   group = lint_augroup,
-      --   callback = function()
-      --     lint.linters_by_ft = slow_linters_by_ft
-      --     lint.try_lint()
-      --   end,
-      -- })
+      vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWritePost' }, {
+        group = lint_augroup,
+        callback = function()
+          if vim.opt_local.modifiable:get() then
+            lint.linters_by_ft = slow_linters_by_ft
+            lint.try_lint()
+          end
+        end,
+      })
     end,
   },
 }

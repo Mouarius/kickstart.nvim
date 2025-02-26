@@ -51,8 +51,7 @@ return {
           { 'mode', right_padding = 2 },
         },
         lualine_b = {
-          { 'filename', file_status = true },
-          'branch',
+          { 'filename', file_status = false, path = 4 },
           {
             'diagnostics',
             source = { 'nvim' },

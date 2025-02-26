@@ -14,6 +14,8 @@ return { -- LSP Configuration & Plugins
         -- Options related to notification subsystem
         notification = {
           -- Options related to the notification window and buffer
+
+          override_vim_notify = true,
           window = {
             winblend = 0, -- Background color opacity in the notification window
           },
