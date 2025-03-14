@@ -63,17 +63,26 @@ vim.keymap.set('n', '<leader>tf', '<cmd>tabnew %<CR>', { desc = 'Open current bu
 vim.keymap.set('n', '<leader>tn', '<cmd>tabnext<CR>', { desc = 'Go to next tab' })
 vim.keymap.set('n', '<leader>tp', '<cmd>tabprev<CR>', { desc = 'Go to previous tab' })
 
-vim.keymap.set('n', '<leader>cfp', function()
+vim.keymap.set('n', '<leader>yf', function()
   local file_path = vim.api.nvim_buf_get_name(0)
   vim.fn.setreg('+', file_path)
   vim.notify 'Copied file path to clipboard!'
-end, { desc = '[y]ank [f]ile [p]ath' })
+end, { desc = '[y]ank file [f]ull path' })
 
-vim.keymap.set('n', '<leader>cfn', function()
+vim.keymap.set('n', '<leader>yr', function()
+  local file_path = vim.api.nvim_buf_get_name(0)
+  local cwd = vim.fn.getcwd()
+  local relative_path = "~" .. string.sub(file_path, string.len(cwd) + 1)
+
+  vim.fn.setreg('+', relative_path)
+  vim.notify 'Copied file path to clipboard!'
+end, { desc = '[y]ank file [r]elative path' })
+
+vim.keymap.set('n', '<leader>yn', function()
   local file_name = vim.fn.expand '%:t'
   vim.fn.setreg('+', file_name)
   vim.notify 'Copied file name to clipboard!'
-end, { desc = '[y]ank [f]ile [n]ame' })
+end, { desc = '[y]ank file [n]ame' })
 
 -- Resize window using <ctrl> arrow keys
 vim.keymap.set('n', '<C-Up>', '<cmd>resize +2<cr>', { desc = 'Increase window height' })
