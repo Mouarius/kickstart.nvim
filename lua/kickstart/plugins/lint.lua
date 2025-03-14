@@ -6,15 +6,16 @@ return {
     config = function()
       local lint = require 'lint'
 
-      local fast_linters_by_ft = {
+      local linters_by_ft = {
         htmldjango = { 'djlint' },
+        python = {"dmypy"}
       }
 
       local dmypy = lint.linters.dmypy
-      dmypy.cwd = vim.fn.getcwd() .."/mysite"
-      local slow_linters_by_ft = {
-        python = { },
-      }
+      local cwd = vim.fn.getcwd()
+      if string.match(cwd, "greenday") then
+        dmypy.cwd = vim.fn.getcwd() .. '/mysite'
+      end
 
       -- local eslint_d = require 'lint.linters.eslint_d'
       -- eslint_d.env = { ['ESLINT_USE_FLAT_CONFIG'] = 'false' }
@@ -48,18 +49,12 @@ return {
         group = lint_augroup,
         callback = function()
           if vim.opt_local.modifiable:get() then
-            lint.linters_by_ft = fast_linters_by_ft
+            lint.linters_by_ft = linters_by_ft
             lint.try_lint()
-          end
-        end,
-      })
-
-      vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWritePost' }, {
-        group = lint_augroup,
-        callback = function()
-          if vim.opt_local.modifiable:get() then
-            lint.linters_by_ft = slow_linters_by_ft
-            lint.try_lint()
+            -- Run dmypy relative to mysite directory
+            -- if vim.bo.filetype == 'python' then
+            --   lint.try_lint('dmypy', { cwd = vim.fn.getcwd() .. '/mysite' })
+            -- end
           end
         end,
       })

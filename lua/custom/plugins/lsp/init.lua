@@ -190,7 +190,11 @@ return { -- LSP Configuration & Plugins
       pyright = {
         root_dir = function()
           -- Configure the root directory for my dev environment at work
-          return vim.fn.getcwd() .. '/mysite'
+          local cwd = vim.fn.getcwd()
+          if string.match(cwd, "greenday") then
+            return vim.fn.getcwd() .. '/mysite'
+          end
+          return cwd
         end,
         handlers = {
           ['textDocument/publishDiagnostics'] = function(err, result, ctx, config)
