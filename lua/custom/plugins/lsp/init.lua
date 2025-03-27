@@ -27,6 +27,7 @@ return { -- LSP Configuration & Plugins
     'hrsh7th/cmp-nvim-lsp',
   },
   config = function()
+    vim.lsp.set_log_level 'debug'
     -- Brief aside: **What is LSP?**
     --
     -- LSP is an initialism you've probably heard, but might not understand what it is.
@@ -191,7 +192,7 @@ return { -- LSP Configuration & Plugins
         root_dir = function()
           -- Configure the root directory for my dev environment at work
           local cwd = vim.fn.getcwd()
-          if string.match(cwd, "greenday") then
+          if string.match(cwd, 'greenday') then
             return vim.fn.getcwd() .. '/mysite'
           end
           return cwd
@@ -235,74 +236,24 @@ return { -- LSP Configuration & Plugins
           end
         end,
       },
-      -- WORK IN PROGRESS TO ADD REFACTORING CODE ACTIONS TO PYTHON
-      -- pylsp = {
-      --   settings = {
-      --     pylsp = {
-      --       plugins = {
-      --         autopep8 = {
-      --           enabled = false,
-      --         },
-      --         jedi_completion = {
-      --           enabled = false,
-      --         },
-      --         jedi_definition = {
-      --           enabled = false
-      --         },
-      --         jedi_hover = {
-      --           enabled = false
-      --         },
-      --         jedi_reference = {
-      --           enabled = false
-      --         },
-      --         jedi_signature_help = {
-      --           enabled = false
-      --         },
-      --         jedi_symbols = {
-      --           enabled = false
-      --         },
-      --         jedi_rename = {
-      --           enabled = false
-      --         },
-      --         mccabe = {
-      --           enabled = false
-      --         },
-      --         preload = {
-      --           enabled = false
-      --         },
-      --         pycodestyle = {
-      --           enabled = false
-      --         },
-      --         pydocstyle = {
-      --           enabled = false
-      --         },
-      --         pyflakes = {
-      --           enabled = false
-      --         },
-      --         pylint = {
-      --           enabled = false
-      --         },
-      --         rope_autoimport = {
-      --           enabled = false
-      --         },
-      --         rope_rename = {
-      --           enabled = false
-      --         },
-      --         yapf = {
-      --           enabled = false
-      --         },
-      --         pylsp_rope = {
-      --           rename = true,
-      --         },
-      --       },
-      --     },
-      --   },
-      -- },
-      tailwindcss = {},
-      -- eslint_d = {
-      --   settings = {
-      --     workingDirectories = { mode = 'auto' },
-      --   },
+      tailwindcss = {
+        root_dir = function()
+          local cwd = vim.fn.getcwd()
+          if string.match(cwd, 'greenday') then
+            return '~/dev/greenday/fronts/'
+          end
+          return vim.fn.getcwd()
+        end,
+      },
+      -- tailwindcss = {
+      --   -- settings = {
+      --   --   tailwindCSS = {
+      --   --
+      --   --     experimental = {
+      --   --       configFile = './fronts/lib/firebolt/src/tailwind.config.cjs',
+      --   --     },
+      --   --   },
+      --   -- },
       -- },
       ts_ls = {
         init_options = {

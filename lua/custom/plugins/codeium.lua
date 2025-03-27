@@ -1,19 +1,32 @@
 return {
-  'Exafunction/codeium.vim',
-  event="BufEnter",
+  'Exafunction/codeium.nvim',
+  dependencies = {
+    'nvim-lua/plenary.nvim',
+    'hrsh7th/nvim-cmp',
+  },
+  event = "InsertEnter",
+  build = "Codeium Auth",
   config = function()
-    vim.keymap.set("n", "<leader>oc", "<cmd>CodeiumToggle<cr>", {desc="Toggle Codeium extension"})
-    vim.keymap.set('i', '<C-g>', function()
-      return vim.fn['codeium#Accept']()
-    end, { expr = true, silent = true })
-    vim.keymap.set('i', '<c-n>', function()
-      return vim.fn['codeium#CycleCompletions'](1)
-    end, { expr = true, silent = true })
-    vim.keymap.set('i', '<c-p>', function()
-      return vim.fn['codeium#CycleCompletions'](-1)
-    end, { expr = true, silent = true })
-    vim.keymap.set('i', '<c-x>', function()
-      return vim.fn['codeium#Clear']()
-    end, { expr = true, silent = true })
+    require('codeium').setup {
+      enable_cmp_source = true,
+      virtual_text = {
+        enabled = false,
+        key_bindings = {
+          -- Accept the current completion.
+          accept = false,
+          -- Accept the next word.
+          accept_word = false,
+          -- Accept the next line.
+          accept_line = false,
+          -- Clear the virtual text.
+          clear = '<C-x>',
+          -- Cycle to the next completion.
+          next = '<C-]>',
+          -- Cycle to the previous completion.
+          prev = '<C-[>',
+        },
+      },
+    }
+    vim.keymap.set('n', '<leader>oc', '<cmd>CodeiumToggle<cr>', { desc = 'Toggle Codeium extension' })
   end,
 }
