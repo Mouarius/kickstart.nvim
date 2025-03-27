@@ -13,9 +13,9 @@ return {
         end
 
         -- Navigation
-        map('n', 'àh', function()
+        map('n', ']h', function()
           if vim.wo.diff then
-            return 'àh'
+            return ']h'
           end
           vim.schedule(function()
             gs.next_hunk()
@@ -23,9 +23,9 @@ return {
           return '<Ignore>'
         end, { expr = true })
 
-        map('n', 'çh', function()
+        map('n', '[h', function()
           if vim.wo.diff then
-            return 'çh'
+            return '[h'
           end
           vim.schedule(function()
             gs.prev_hunk()
