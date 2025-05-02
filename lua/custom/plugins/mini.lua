@@ -1,25 +1,43 @@
-return { -- Collection of various small independent plugins/modules
+return {
   'echasnovski/mini.nvim',
   config = function()
-    -- Better Around/Inside textobjects
-    --
-    -- Examples:
-    --  - va)  - [V]isually select [A]round [)]paren
-    --  - yinq - [Y]ank [I]nside [N]ext [']quote
-    --  - ci'  - [C]hange [I]nside [']quote
     require('mini.ai').setup { n_lines = 500 }
 
-    -- Add/delete/replace surroundings (brackets, quotes, etc.)
     require('mini.surround').setup()
 
     require('mini.move').setup()
 
     require('mini.bufremove').setup()
 
-    -- require("mini.completion").setup()
+    require('mini.statusline').setup {
+      content = {
+        active = function()
+          local mode, mode_hl = MiniStatusline.section_mode { trunc_width = 120 }
+          local diagnostics = MiniStatusline.section_diagnostics { trunc_width = 75 }
+          local lsp = MiniStatusline.section_lsp { trunc_width = 75 }
+          local filename = MiniStatusline.section_filename { trunc_width = 140 }
+          local filetype = vim.bo.filetype
+          local location = MiniStatusline.section_location { trunc_width = 75 }
+          local search = MiniStatusline.section_searchcount { trunc_width = 75 }
 
-    -- ... and there is more!
-    --  Check out: https://github.com/echasnovski/mini.nvim
+          return MiniStatusline.combine_groups {
+            { hl = mode_hl, strings = { mode } },
+            { hl = 'MiniStatuslineDevinfo', strings = { diagnostics, lsp } },
+            '%<', -- Mark general truncate point
+            { hl = 'MiniStatuslineFilename', strings = { filename } },
+            '%=', -- End left alignment
+            { hl = 'MiniStatuslineFileinfo', strings = { filetype } },
+            { hl = mode_hl, strings = { search, location } },
+          }
+        end,
+        inactive = function()
+          local filename = MiniStatusline.section_filename { trunc_width = 140 }
+          return MiniStatusline.combine_groups {
+            { hl = 'MiniStatuslineInactive', strings = { filename } },
+          }
+        end,
+      },
+    }
 
     vim.keymap.set('n', '<leader>bd', function()
       local bd = require('mini.bufremove').delete

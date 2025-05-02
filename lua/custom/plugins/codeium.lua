@@ -1,11 +1,11 @@
 return {
-  'Exafunction/codeium.nvim',
+  'Exafunction/windsurf.nvim',
   dependencies = {
     'nvim-lua/plenary.nvim',
-    'hrsh7th/nvim-cmp',
+    'saghen/blink.cmp',
   },
-  event = "InsertEnter",
-  build = "Codeium Auth",
+  event = 'BufEnter',
+  build = 'Codeium Auth',
   config = function()
     require('codeium').setup {
       enable_cmp_source = true,

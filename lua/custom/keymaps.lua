@@ -84,13 +84,15 @@ vim.keymap.set('n', '<leader>yn', function()
   vim.notify 'Copied file name to clipboard!'
 end, { desc = '[y]ank file [n]ame' })
 
--- Resize window using <ctrl> arrow keys
-vim.keymap.set('n', '<C-Up>', '<cmd>resize +2<cr>', { desc = 'Increase window height' })
-vim.keymap.set('n', '<C-Down>', '<cmd>resize -2<cr>', { desc = 'Decrease window height' })
-vim.keymap.set('n', '<C-Left>', '<cmd>vertical resize -2<cr>', { desc = 'Decrease window width' })
-vim.keymap.set('n', '<C-Right>', '<cmd>vertical resize +2<cr>', { desc = 'Increase window width' })
 
-vim.keymap.set('n', '<C-a>', 'GVgg', { desc = 'Select the whole file' })
+vim.keymap.set('n', '<M-a>', 'GVgg', { desc = 'Select the whole file' })
+
+vim.keymap.set("n", "<space><space>x", "<cmd>source %<CR>")
+vim.keymap.set("n", "<space>x", ":.lua<CR>")
+vim.keymap.set("v", "<space>x", ":lua<CR>")
+
+vim.keymap.set("n", "<M-j>", "<cmd>cnext<CR>")
+vim.keymap.set("n", "<M-k>", "<cmd>cprev<CR>")
 
 -- X
 vim.keymap.set('x', '<leader>p', "_dP'", { desc = 'Paste not deleted' })

@@ -37,8 +37,59 @@ return {
         end,
         desc = 'Debug: Set Breakpoint',
       },
+      {
+        '<leader>lp',
+        function()
+          require('dap').set_breakpoint(nil, nil, vim.fn.input 'Log point message: ')
+        end,
+        desc = 'Debug: Set Logpoint',
+      },
+      {
+        '<Leader>dr',
+        function()
+          require('dap').repl.open()
+        end,
+        desc = 'Debug: Open REPL',
+      },
+      {
+        '<Leader>dl',
+        function()
+          require('dap').run_last()
+        end,
+        desc = 'Debug: Run Last',
+      },
+      {
+        '<Leader>dh',
+        function()
+          require('dap.ui.widgets').hover()
+        end,
+        desc = 'Debug: Hover',
+      },
+      {
+        '<Leader>dp',
+        function()
+          require('dap.ui.widgets').preview()
+        end,
+        desc = 'Debug: Preview',
+      },
+      {
+        '<Leader>dF',
+        function()
+          local widgets = require 'dap.ui.widgets'
+          widgets.centered_float(widgets.frames)
+        end,
+        desc = 'Debug: Frames',
+      },
+      {
+        '<Leader>dS',
+        function()
+          local widgets = require 'dap.ui.widgets'
+          widgets.centered_float(widgets.scopes)
+        end,
+        desc = 'Debug: Scopes',
+      },
       -- Toggle to see last session result. Without this, you can't see session output in case of unhandled exception.
-      { '<F7>', dapui.toggle, desc = 'Debug: See last session result.' },
+      { '<leader>dls', dapui.toggle, desc = 'Debug: See last session result.' },
       unpack(keys),
     }
   end,
@@ -47,6 +98,9 @@ return {
     local dapui = require 'dapui'
     local dap_config = require 'custom.dap.config'
     local utils = require 'custom.utils'
+
+    vim.fn.sign_define('DapBreakpoint', { text = '', texthl = '', linehl = '', numhl = '' })
+    vim.fn.sign_define('DapBreakpointCondition', { text = '', texthl = '', linehl = '', numhl = '' })
 
     require('mason').setup()
     require('mason-nvim-dap').setup {

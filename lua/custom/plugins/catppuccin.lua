@@ -25,6 +25,7 @@ return {
         gitsigns = true,
         cmp = true,
         mini = true,
+        blink_cmp = true,
         telescope = {
           enabled = true
         },
@@ -32,7 +33,8 @@ return {
         treesitter = true,
         treesitter_context = true,
         which_key = true,
-        nvimtree = true,
+        neotest = true,
+
       },
     }
     vim.cmd.colorscheme 'catppuccin'
