@@ -2,8 +2,8 @@ return { -- LSP Configuration & Plugins
   'neovim/nvim-lspconfig',
   dependencies = {
     -- Automatically install LSPs and related tools to stdpath for Neovim
-    { 'williamboman/mason.nvim', config = true }, -- NOTE: Must be loaded before dependants
-    'williamboman/mason-lspconfig.nvim',
+    { 'mason-org/mason.nvim', opts = {} }, -- NOTE: Must be loaded before dependants
+    'mason-org/mason-lspconfig.nvim',
     'WhoIsSethDaniel/mason-tool-installer.nvim',
     -- Useful status updates for LSP.
     {
@@ -17,7 +17,7 @@ return { -- LSP Configuration & Plugins
         },
       },
     },
-    "saghen/blink.cmp",
+    'saghen/blink.cmp',
   },
   config = function()
     vim.api.nvim_create_autocmd('LspAttach', {
@@ -28,27 +28,35 @@ return { -- LSP Configuration & Plugins
           vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
         end
 
-        map('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
+        map('grn', vim.lsp.buf.rename, '[C]ode [R]ename')
 
-        map('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
+        map('gra', vim.lsp.buf.code_action, '[C]ode [A]ction', { 'n', 'x' })
 
-        map('gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
-
-        map('<leader>D', require('telescope.builtin').lsp_type_definitions, 'Type [D]efinition')
-
-        -- Fuzzy find all the symbols in your current document.
-        --  Symbols are things like variables, functions, types, etc.
-        map('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
-
-        map('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
-
-        map('<leader>cn', vim.lsp.buf.rename, '[C]ode [R]ename')
-
-        map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction', { 'n', 'x' })
+        -- Jump to the definition of the word under your cursor.
+        --  This is where a variable was first declared, or where a function is defined, etc.
+        --  To jump back, press <C-t>.
+        map('grd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
 
         -- WARN: This is not Goto Definition, this is Goto Declaration.
         --  For example, in C this would take you to the header.
-        map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
+        map('grD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
+
+        map('grr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
+
+        map('gri', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
+
+        -- Fuzzy find all the symbols in your current document.
+        --  Symbols are things like variables, functions, types, etc.
+        map('gO', require('telescope.builtin').lsp_document_symbols, 'Open Document Symbols')
+
+        -- Fuzzy find all the symbols in your current workspace.
+        --  Similar to document symbols, except searches over your entire project.
+        map('gW', require('telescope.builtin').lsp_dynamic_workspace_symbols, 'Open Workspace Symbols')
+
+        -- Jump to the type of the word under your cursor.
+        --  Useful when you're not sure what type a variable is and you want to see
+        --  the definition of its *type*, not where it was *defined*.
+        map('grt', require('telescope.builtin').lsp_type_definitions, '[G]oto [T]ype Definition')
 
         -- The following two autocommands are used to highlight references of the
         -- word under your cursor when your cursor rests there for a little while.
@@ -56,7 +64,7 @@ return { -- LSP Configuration & Plugins
         --
         -- When you move your cursor, the highlights will be cleared (the second autocommand).
         local client = vim.lsp.get_client_by_id(event.data.client_id)
-        if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
+        if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
           local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', { clear = false })
           vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
             buffer = event.buf,
@@ -83,7 +91,7 @@ return { -- LSP Configuration & Plugins
         -- code, if the language server you are using supports them
         --
         -- This may be unwanted, since they displace some of your code
-        if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
+        if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
           map('<leader>th', function()
             vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
           end, '[T]oggle Inlay [H]ints')
@@ -91,116 +99,103 @@ return { -- LSP Configuration & Plugins
       end,
     })
 
-    local capabilities = vim.lsp.protocol.make_client_capabilities()
-    capabilities = vim.tbl_deep_extend('force', capabilities, require('blink-cmp').get_lsp_capabilities())
+    -- local capabilities = vim.lsp.protocol.make_client_capabilities()
+    -- capabilities = vim.tbl_deep_extend('force', capabilities, require('blink-cmp').get_lsp_capabilities())
+    local capabilities = require('blink.cmp').get_lsp_capabilities()
+
+    vim.lsp.config('*', {
+      capabilities = capabilities,
+    })
+
+    vim.lsp.config('pyright', {
+      root_markers = { 'manage.py' },
+      handlers = {
+        ['textDocument/publishDiagnostics'] = function(err, result, ctx, config)
+          -- In django, pyright keeps bothering me with "reportIncompatibleMethodOverride" errors with models Meta class
+          -- Those lines of code filters the diagnostics with those error codes from the pyright lsp output
+          local filtered_diagnostics = {}
+          for _, value in ipairs(result.diagnostics) do
+            if value ~= nil and value.code ~= 'reportIncompatibleVariableOverride' and value.code ~= 'reportIncompatibleMethodOverride' then
+              table.insert(filtered_diagnostics, value)
+            end
+          end
+          result.diagnostics = filtered_diagnostics
+          return vim.lsp.diagnostic.on_publish_diagnostics(err, result, ctx, config)
+        end,
+      },
+      settings = {
+        pyright = {
+          disableOrganizeImports = true,
+          analysis = {
+            autoSearchPaths = false,
+            diagnosticMode = 'openFilesOnly',
+            useLibraryCodeForTypes = true,
+          },
+        },
+      },
+    })
+
+    vim.lsp.config('ruff', {
+      on_attach = function(client, bufnr)
+        if client.name == 'ruff' then
+          client.server_capabilities.hoverProvider = false
+        end
+      end,
+    })
 
     local vue_language_server_path = vim.fn.getenv 'HOME' .. '/.local/share/nvim/mason/packages/vue-language-server/node_modules/@vue/language-server'
-    local ruff_path = vim.fn.getenv 'HOME' .. '/.local/share/nvim/mason/packages/ruff/venv/bin/ruff'
+    vim.lsp.config('ts_ls', {
+      init_options = {
+        plugins = {
+          {
+            name = '@vue/typescript-plugin',
+            location = vue_language_server_path,
+            languages = { 'vue' },
+          },
+        },
+      },
+    })
+    vim.lsp.config('lua_ls', {
+      settings = {
+        Lua = {
+          completion = {
+            callSnippet = 'Replace',
+          },
+        },
+      },
+    })
 
-    local pre_commit_config = vim.fn.findfile 'pre-commit-config.yaml'
+    vim.lsp.config('volar', {
+      init_options = {
+        vue = {
+          hybridMode = false,
+        },
+      },
+    })
+
+    vim.lsp.config('tailwindcss', { root_markers = { 'tailwind.config.js', 'tailwind.config.cjs', 'tailwind.config.ts' } })
+    vim.lsp.enable 'tailwindcss'
 
     local servers = {
       cssls = {},
       astro = {},
-      volar = {
-        init_options = {
-          vue = {
-            hybridMode = false,
-          },
-        },
-      },
-      pyright = {
-        root_dir = function()
-          -- Configure the root directory for my dev environment at work
-          local cwd = vim.fn.getcwd()
-          if string.match(cwd, 'greenday') then
-            return vim.fn.getcwd() .. '/mysite'
-          end
-          return cwd
-        end,
-        handlers = {
-          ['textDocument/publishDiagnostics'] = function(err, result, ctx, config)
-            -- In django, pyright keeps bothering me with "reportIncompatibleMethodOverride" errors with models Meta class
-            -- Those lines of code filters the diagnostics with those error codes from the pyright lsp output
-            local filtered_diagnostics = {}
-            for _, value in ipairs(result.diagnostics) do
-              if value ~= nil and value.code ~= 'reportIncompatibleVariableOverride' and value.code ~= 'reportIncompatibleMethodOverride' then
-                table.insert(filtered_diagnostics, value)
-              end
-            end
-            result.diagnostics = filtered_diagnostics
-            return vim.lsp.diagnostic.on_publish_diagnostics(err, result, ctx, config)
-          end,
-        },
-        settings = {
-          python = {
-            analysis = {
-              diagnosticMode = 'openFilesOnly',
-              useLibraryCodeForTypes = true,
-            },
-          },
-          pyright = {
-            disableOrganizeImports = true,
-          },
-        },
-      },
-      ruff = {
-        on_attach = function(client, bufnr)
-          if client.name == 'ruff' then
-            client.server_capabilities.hoverProvider = false
-          end
-        end,
-      },
-      tailwindcss = {
-        root_dir = function()
-          local cwd = vim.fn.getcwd()
-          if string.match(cwd, 'greenday') then
-            return '~/dev/greenday/fronts/'
-          end
-          return vim.fn.getcwd()
-        end,
-      },
       jinja_lsp = {},
-      ts_ls = {
-        init_options = {
-          plugins = {
-            {
-              name = '@vue/typescript-plugin',
-              location = vue_language_server_path,
-              languages = { 'vue' },
-            },
-          },
-        },
-      },
-      lua_ls = {
-        settings = {
-          Lua = {
-            completion = {
-              callSnippet = 'Replace',
-            },
-          },
-        },
-      },
     }
 
-    require('mason').setup()
-
-    -- You can add other tools here that you want Mason to install
-    -- for you, so that they are available from within Neovim.
     local ensure_installed = vim.tbl_keys(servers or {})
+
     vim.list_extend(ensure_installed, {
       'stylua', -- Used to format Lua code
     })
-    require('mason-tool-installer').setup { ensure_installed = ensure_installed }
+
+    require('mason-tool-installer').setup {
+      ensure_installed = ensure_installed,
+    }
 
     require('mason-lspconfig').setup {
-      handlers = {
-        function(server_name)
-          local server = servers[server_name] or {}
-          server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-          require('lspconfig')[server_name].setup(server)
-        end,
-      },
+      ensure_installed = {},
+      automatic_installation = false,
+      automatic_enable = true,
     }
   end,
 }
