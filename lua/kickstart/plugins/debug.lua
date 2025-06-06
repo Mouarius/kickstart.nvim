@@ -16,7 +16,7 @@ return {
 
       'mfussenegger/nvim-dap-python',
       enabled = function()
-        return require('custom.dap.config').handler_active['python']
+        return require('dap.config').handler_active['python']
       end,
     },
   },
@@ -96,8 +96,8 @@ return {
   config = function()
     local dap = require 'dap'
     local dapui = require 'dapui'
-    local dap_config = require 'custom.dap.config'
-    local utils = require 'custom.utils'
+    local dap_config = require 'dap.config'
+    local utils = require 'utils'
 
     vim.fn.sign_define('DapBreakpoint', { text = '', texthl = '', linehl = '', numhl = '' })
     vim.fn.sign_define('DapBreakpointCondition', { text = '', texthl = '', linehl = '', numhl = '' })
@@ -139,7 +139,7 @@ return {
     dap.listeners.before.event_exited['dapui_config'] = dapui.close
 
     if dap_config.handler_active.python then
-      require('custom.dap.python').setup()
+      require('dap.python').setup()
     end
   end,
 }

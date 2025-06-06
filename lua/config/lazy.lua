@@ -20,7 +20,7 @@ require('lazy').setup {
   -- require 'kickstart.plugins.indent_line',
 
   spec = {
-    { import = 'custom.plugins' },
+    { import = 'plugins' },
     { import = 'kickstart.plugins.debug' },
     { import = 'kickstart.plugins.lint' },
   },

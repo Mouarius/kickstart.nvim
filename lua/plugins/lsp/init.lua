@@ -107,6 +107,45 @@ return { -- LSP Configuration & Plugins
       capabilities = capabilities,
     })
 
+    vim.lsp.config('pylsp', {
+
+      root_markers = { 'manage.py' },
+      settings = {
+        pylsp = {
+          rope = {},
+          plugins = {
+            pylsp_rope = {
+              rename = false
+            },
+            rope_rename = {
+              enabled = false,
+            },
+            jedi = {
+              enabled = false,
+            },
+            jedi_completion = {
+              enabled = false,
+            },
+            jedi_definition = {
+              enabled = false,
+            },
+            jedi_hover = {
+              enabled = false,
+            },
+            jedi_symbols = {
+              enabled = false,
+            },
+            pycodestyle = {
+              enabled = false,
+            },
+            pylint = {
+              enabled = false,
+            },
+          },
+        },
+      },
+    })
+
     vim.lsp.config('pyright', {
       root_markers = { 'manage.py' },
       handlers = {

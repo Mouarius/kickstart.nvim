@@ -1,6 +1,6 @@
-require 'custom.options'
-require 'custom.keymaps'
-require 'custom.autocommands'
+require 'options'
+require 'keymaps'
+require 'autocommands'
 require 'config.lazy'
 
 require('config.hightlights').setup()
