@@ -4,7 +4,7 @@ return {
   opts = function()
     return {
       on_attach = function(bufnr)
-        local gs = package.loaded.gitsigns
+        local gs = require('gitsigns')
 
         local function map(mode, l, r, opts)
           opts = opts or {}
@@ -15,23 +15,21 @@ return {
         -- Navigation
         map('n', ']h', function()
           if vim.wo.diff then
-            return ']h'
+            vim.cmd.normal { ']h', bang = true }
           end
           vim.schedule(function()
-            gs.next_hunk()
+            gs.nav_hunk('next')
           end)
-          return '<Ignore>'
-        end, { expr = true })
+        end, { desc = "Jump to next git [h]unk" })
 
         map('n', '[h', function()
           if vim.wo.diff then
-            return '[h'
+            vim.cmd.normal { '[h', bang = true }
           end
           vim.schedule(function()
-            gs.prev_hunk()
+            gs.nav_hunk('prev')
           end)
-          return '<Ignore>'
-        end, { expr = true })
+        end, { desc = "Jump to previous git [h]unk" })
 
         -- Actions
         map('n', '<leader>hs', gs.stage_hunk, { desc = 'Git: Stage hunk' })
@@ -54,7 +52,7 @@ return {
         map('n', '<leader>hD', function()
           gs.diffthis '~'
         end)
-        map('n', '<leader>td', gs.toggle_deleted)
+        map('n', '<leader>td', gs.preview_hunk_inline(), { desc = '[T]oggle git show [d]eleted' })
 
         -- Text object
         map({ 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<CR>')
