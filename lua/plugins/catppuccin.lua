@@ -6,9 +6,13 @@ return {
   config = function()
     local catppuccin = require 'catppuccin'
     catppuccin.setup {
+      float = {
+        solid = false,
+        transparent = true,
+      },
       flavor = 'mocha',
-      default_integrations=true,
-      transparent_background= true,
+      default_integrations = true,
+      transparent_background = true,
       term_colors = false,
       integrations = {
         native_lsp = {
@@ -27,16 +31,15 @@ return {
         mini = true,
         blink_cmp = true,
         telescope = {
-          enabled = true
+          enabled = true,
         },
         noice = true,
         treesitter = true,
         treesitter_context = true,
         which_key = true,
         neotest = true,
-
       },
     }
-    vim.cmd.colorscheme 'catppuccin'
+    vim.cmd.colorscheme 'catppuccin-mocha'
   end,
 }
