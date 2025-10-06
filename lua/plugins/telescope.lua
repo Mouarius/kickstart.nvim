@@ -1,7 +1,7 @@
 return { -- Fuzzy Finder (files, lsp, etc)
   'nvim-telescope/telescope.nvim',
   event = 'VimEnter',
-  branch = '0.1.x',
+  tag = '0.1.8',
   dependencies = {
     'nvim-lua/plenary.nvim',
     {
@@ -25,11 +25,11 @@ return { -- Fuzzy Finder (files, lsp, etc)
           },
         },
       },
-      extensions = {
-        ['ui-select'] = {
-          require('telescope.themes').get_dropdown(),
-        },
-      },
+      -- extensions = {
+      --   ['ui-select'] = {
+      --     require('telescope.themes').get_dropdown(),
+      --   },
+      -- },
     }
 
     pcall(require('telescope').load_extension, 'fzf')
