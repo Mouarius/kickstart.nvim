@@ -5,7 +5,7 @@ return { -- Autoformat
     notify_on_error = false,
     formatters_by_ft = {
       lua = { 'stylua' },
-      python = { 'ruff_format' },
+      python = { 'ruff_fix', 'ruff_format' },
       astro = { 'prettierd' },
       json = { 'prettierd' },
       htmldjango = { 'djlint' },
