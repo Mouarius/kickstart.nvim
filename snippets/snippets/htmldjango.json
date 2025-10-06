@@ -2,7 +2,7 @@
   "activate djlint formatter": {
     "prefix": "djl",
     "body": [
-      "{# djlint: on #}",
+      "{# djlint: on #}"
     ]
   }
 }

@@ -11,4 +11,13 @@
       "print(\"$1\")"
     ]
   },
+  "add RunSQL in migrations": {
+    "prefix": "runsql",
+    "body": [
+        "migrations.RunSQL(",
+            "sql=\"ALTER TABLE ${1:app}_${2:model} ALTER ${3:field} SET DEFAULT ${4}\",",
+            "reverse_sql=\"ALTER TABLE ${1:app}_${2:model} ALTER ${3:field} DROP DEFAULT\",",
+        "),"
+    ]
+  }
 }
