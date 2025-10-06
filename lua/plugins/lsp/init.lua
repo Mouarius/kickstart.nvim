@@ -20,6 +20,7 @@ return { -- LSP Configuration & Plugins
     'saghen/blink.cmp',
   },
   config = function()
+    local utils = require 'utils'
     vim.api.nvim_create_autocmd('LspAttach', {
       group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
       callback = function(event)
@@ -107,44 +108,44 @@ return { -- LSP Configuration & Plugins
       capabilities = capabilities,
     })
 
-    vim.lsp.config('pylsp', {
-
-      root_markers = { 'manage.py' },
-      settings = {
-        pylsp = {
-          rope = {},
-          plugins = {
-            pylsp_rope = {
-              rename = false
-            },
-            rope_rename = {
-              enabled = false,
-            },
-            jedi = {
-              enabled = false,
-            },
-            jedi_completion = {
-              enabled = false,
-            },
-            jedi_definition = {
-              enabled = false,
-            },
-            jedi_hover = {
-              enabled = false,
-            },
-            jedi_symbols = {
-              enabled = false,
-            },
-            pycodestyle = {
-              enabled = false,
-            },
-            pylint = {
-              enabled = false,
-            },
-          },
-        },
-      },
-    })
+    -- vim.lsp.config('pylsp', {
+    --
+    --   root_markers = { 'manage.py' },
+    --   settings = {
+    --     pylsp = {
+    --       rope = {},
+    --       plugins = {
+    --         pylsp_rope = {
+    --           rename = false
+    --         },
+    --         rope_rename = {
+    --           enabled = false,
+    --         },
+    --         jedi = {
+    --           enabled = false,
+    --         },
+    --         jedi_completion = {
+    --           enabled = false,
+    --         },
+    --         jedi_definition = {
+    --           enabled = false,
+    --         },
+    --         jedi_hover = {
+    --           enabled = false,
+    --         },
+    --         jedi_symbols = {
+    --           enabled = false,
+    --         },
+    --         pycodestyle = {
+    --           enabled = false,
+    --         },
+    --         pylint = {
+    --           enabled = false,
+    --         },
+    --       },
+    --     },
+    --   },
+    -- })
 
     vim.lsp.config('pyright', {
       root_markers = { 'manage.py' },
@@ -164,6 +165,7 @@ return { -- LSP Configuration & Plugins
       },
       settings = {
         pyright = {
+          typeCheckingMode = 'off',
           disableOrganizeImports = true,
           analysis = {
             autoSearchPaths = false,
@@ -212,8 +214,21 @@ return { -- LSP Configuration & Plugins
       },
     })
 
-    vim.lsp.config('tailwindcss', { root_markers = { 'tailwind.config.js', 'tailwind.config.cjs', 'tailwind.config.ts' } })
-    vim.lsp.enable 'tailwindcss'
+    vim.lsp.config('tailwindcss', {
+      root_dir = function(bufnr, on_dir)
+        if utils.is_in_greenday(bufnr) then
+          local tailwind_root = vim.fn.getcwd() .. ''
+          on_dir(tailwind_root)
+        end
+      end,
+      settings = {
+        tailwindCSS = {
+          experimental = {
+            configFile = 'fronts/lib/firebolt/src/tailwind.config.cjs',
+          },
+        },
+      },
+    })
 
     local servers = {
       cssls = {},

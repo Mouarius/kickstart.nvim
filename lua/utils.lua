@@ -1,5 +1,10 @@
 local M = {}
 
+M.is_in_greenday = function(bufnr)
+  -- Get the full path of the buffer with the given bufnr
+  return vim.api.nvim_buf_get_name(bufnr):match 'greenday' ~= nil
+end
+
 M.load_mappings = function(mappings)
   for mode, values in pairs(mappings) do
     for keybind, mapping_info in pairs(values) do
@@ -23,6 +28,7 @@ M.get_python_executable = function()
 
   return vim.fn.exepath 'python3'
 end
+
 M.find_precommit_file = function()
   local Path = require 'plenary.path'
   local scan = require 'plenary.scandir'

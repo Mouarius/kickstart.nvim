@@ -7,6 +7,7 @@ return {
       'saghen/blink.compat',
       version = '*',
     },
+    'Exafunction/windsurf.nvim',
   },
   version = '1.*',
   ---@module 'blink.cmp'
@@ -44,12 +45,14 @@ return {
     -- Default list of enabled providers defined so that you can extend it
     -- elsewhere in your config, without redefining it, due to `opts_extend`
     sources = {
-      default = { 'codeium', 'lsp', 'lazydev', 'path', 'snippets', 'buffer' },
+      default = {'lsp', 'lazydev', 'path', 'snippets', 'buffer', 'codeium' },
       providers = {
         codeium = {
           name = 'codeium',
-          module = 'blink.compat.source',
-          score_offset = 99,
+          -- module = 'blink.compat.source',
+          module = 'codeium.blink',
+          async = true,
+          -- score_offset = 99,
           transform_items = function(ctx, items)
             for _, item in ipairs(items) do
               item.kind_icon = '󰚩'

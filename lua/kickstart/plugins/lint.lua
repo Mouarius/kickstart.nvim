@@ -5,17 +5,15 @@ return {
     event = { 'BufReadPre', 'BufNewFile' },
     config = function()
       local lint = require 'lint'
+      local utils = require 'utils'
 
       local linters_by_ft = {
-        htmldjango = { 'djlint' },
-        python = {"dmypy"}
+        htmldjango = { 'djlint', 'eslint' },
+        python = { 'dmypy' },
       }
 
       local dmypy = lint.linters.dmypy
-      local cwd = vim.fn.getcwd()
-      if string.match(cwd, "greenday") then
-        dmypy.cwd = vim.fn.getcwd() .. '/mysite'
-      end
+      dmypy.cwd = vim.fn.getcwd() .. '/mysite'
 
       -- local eslint_d = require 'lint.linters.eslint_d'
       -- eslint_d.env = { ['ESLINT_USE_FLAT_CONFIG'] = 'false' }

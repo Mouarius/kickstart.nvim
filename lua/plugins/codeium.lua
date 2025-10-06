@@ -2,7 +2,6 @@ return {
   'Exafunction/windsurf.nvim',
   dependencies = {
     'nvim-lua/plenary.nvim',
-    'saghen/blink.cmp',
   },
   event = 'BufEnter',
   build = 'Codeium Auth',

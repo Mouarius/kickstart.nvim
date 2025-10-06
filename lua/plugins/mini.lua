@@ -18,6 +18,14 @@ return {
           local filename = MiniStatusline.section_filename { trunc_width = 140 }
           local filetype = vim.bo.filetype
           local location = MiniStatusline.section_location { trunc_width = 75 }
+
+          local lint_progress = function()
+            local linters = require('lint').get_running()
+            if #linters == 0 then
+              return '󰦕'
+            end
+            return '󱉶 ' .. table.concat(linters, ', ')
+          end
           local search = MiniStatusline.section_searchcount { trunc_width = 75 }
 
           return MiniStatusline.combine_groups {
@@ -26,7 +34,7 @@ return {
             '%<', -- Mark general truncate point
             { hl = 'MiniStatuslineFilename', strings = { filename } },
             '%=', -- End left alignment
-            { hl = 'MiniStatuslineFileinfo', strings = { filetype } },
+            { hl = 'MiniStatuslineFileinfo', strings = { lint_progress(), filetype } },
             { hl = mode_hl, strings = { search, location } },
           }
         end,
