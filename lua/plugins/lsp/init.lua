@@ -3,6 +3,14 @@ return { -- LSP Configuration & Plugins
   dependencies = {
     -- Automatically install LSPs and related tools to stdpath for Neovim
     { 'mason-org/mason.nvim', opts = {} }, -- NOTE: Must be loaded before dependants
+    {
+      'zapling/mason-lock.nvim',
+      init = function()
+        require('mason-lock').setup {
+          lockfile_path = vim.fn.stdpath 'config' .. '/mason-lock.json', -- (default)
+        }
+      end,
+    },
     'mason-org/mason-lspconfig.nvim',
     'WhoIsSethDaniel/mason-tool-installer.nvim',
     -- Useful status updates for LSP.
