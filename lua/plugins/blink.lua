@@ -45,7 +45,7 @@ return {
     -- Default list of enabled providers defined so that you can extend it
     -- elsewhere in your config, without redefining it, due to `opts_extend`
     sources = {
-      default = {'lsp', 'lazydev', 'path', 'snippets', 'buffer', 'codeium' },
+      default = { 'lsp', 'lazydev', 'path', 'snippets', 'buffer', 'codeium' },
       providers = {
         codeium = {
           name = 'codeium',
@@ -78,4 +78,13 @@ return {
     fuzzy = { implementation = 'prefer_rust_with_warning' },
   },
   opts_extend = { 'sources.default' },
+
+  config = function(_, opts)
+    local blink_cmp = require 'blink-cmp'
+    blink_cmp.setup(opts)
+
+    vim.keymap.set({ 'i', 's' }, '<C-l>', function()
+      blink_cmp.snippet_forward()
+    end)
+  end,
 }

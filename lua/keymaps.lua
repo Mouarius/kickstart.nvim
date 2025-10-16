@@ -20,8 +20,12 @@ end)
 vim.keymap.set('n', 'L', '$', { desc = 'Go to end of line' })
 
 -- Diagnostic keymaps
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagnostic message' })
+vim.keymap.set('n', '[d', function()
+  vim.diagnostic.jump { count = -1, float = true }
+end, { desc = 'Go to previous [D]iagnostic message' })
+vim.keymap.set('n', ']d', function()
+  vim.diagnostic.jump { count = 1, float = true }
+end, { desc = 'Go to next [D]iagnostic message' })
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
@@ -72,7 +76,7 @@ end, { desc = '[y]ank file [f]ull path' })
 vim.keymap.set('n', '<leader>yr', function()
   local file_path = vim.api.nvim_buf_get_name(0)
   local cwd = vim.fn.getcwd()
-  local relative_path = "~" .. string.sub(file_path, string.len(cwd) + 1)
+  local relative_path = '~' .. string.sub(file_path, string.len(cwd) + 1)
 
   vim.fn.setreg('+', relative_path)
   vim.notify 'Copied file path to clipboard!'
@@ -84,15 +88,14 @@ vim.keymap.set('n', '<leader>yn', function()
   vim.notify 'Copied file name to clipboard!'
 end, { desc = '[y]ank file [n]ame' })
 
-
 vim.keymap.set('n', '<M-a>', 'GVgg', { desc = 'Select the whole file' })
 
-vim.keymap.set("n", "<space><space>x", "<cmd>source %<CR>")
-vim.keymap.set("n", "<space>x", ":.lua<CR>")
-vim.keymap.set("v", "<space>x", ":lua<CR>")
+vim.keymap.set('n', '<space><space>x', '<cmd>source %<CR>')
+vim.keymap.set('n', '<space>x', ':.lua<CR>')
+vim.keymap.set('v', '<space>x', ':lua<CR>')
 
-vim.keymap.set("n", "<M-j>", "<cmd>cnext<CR>")
-vim.keymap.set("n", "<M-k>", "<cmd>cprev<CR>")
+vim.keymap.set('n', '<M-j>', '<cmd>cnext<CR>')
+vim.keymap.set('n', '<M-k>', '<cmd>cprev<CR>')
 
 -- X
 vim.keymap.set('x', '<leader>p', "_dP'", { desc = 'Paste not deleted' })
