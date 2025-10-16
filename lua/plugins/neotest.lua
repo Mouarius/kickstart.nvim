@@ -2,6 +2,7 @@ return {
   'nvim-neotest/neotest',
   dependencies = {
     'nvim-neotest/neotest-python',
+    'marilari88/neotest-vitest',
     'nvim-neotest/nvim-nio',
     'nvim-lua/plenary.nvim',
     'antoinemadec/FixCursorHold.nvim',
@@ -10,6 +11,7 @@ return {
   config = function()
     require('neotest').setup {
       adapters = {
+        require 'neotest-vitest' {},
         require 'neotest-python' {
           dap = { justMyCode = false },
         },
