@@ -4,4 +4,4 @@ require 'autocommands'
 require 'floaterminal'
 require 'config.lazy'
 
-require('config.hightlights').setup()
+require('config.highlights').setup()
