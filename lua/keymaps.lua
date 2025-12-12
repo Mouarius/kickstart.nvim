@@ -76,7 +76,7 @@ end, { desc = '[y]ank file [f]ull path' })
 vim.keymap.set('n', '<leader>yr', function()
   local file_path = vim.api.nvim_buf_get_name(0)
   local cwd = vim.fn.getcwd()
-  local relative_path = '~' .. string.sub(file_path, string.len(cwd) + 1)
+  local relative_path = string.sub(file_path, string.len(cwd) + 1)
 
   vim.fn.setreg('+', relative_path)
   vim.notify 'Copied file path to clipboard!'

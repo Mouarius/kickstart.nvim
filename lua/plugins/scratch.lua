@@ -23,6 +23,6 @@ return {
   end,
   keys = {
     { '<leader>ns', '<cmd>Scratch<cr>', desc = '[n]ew scratch file' },
-    { '<leader>fs', '<cmd>ScratchOpenFzf<cr>', desc = '[f]ind in [s]cratch files' },
+    { '<leader>ls', '<cmd>ScratchOpenFzf<cr>', desc = '[l]list [s]cratch files' },
   },
 }
