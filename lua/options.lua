@@ -110,3 +110,10 @@ vim.diagnostic.config {
 vim.diagnostic.config {
   virtual_text = false,
 }
+
+-- Filetypes detection
+vim.filetype.add({
+  pattern = {
+    [".*/templates/.*%.html"] = "htmldjango",
+  },
+})

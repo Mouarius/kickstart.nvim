@@ -108,52 +108,20 @@ return { -- LSP Configuration & Plugins
       end,
     })
 
-    -- local capabilities = vim.lsp.protocol.make_client_capabilities()
-    -- capabilities = vim.tbl_deep_extend('force', capabilities, require('blink-cmp').get_lsp_capabilities())
     local capabilities = require('blink.cmp').get_lsp_capabilities()
 
     vim.lsp.config('*', {
       capabilities = capabilities,
     })
 
-    -- vim.lsp.config('pylsp', {
-    --
-    --   root_markers = { 'manage.py' },
-    --   settings = {
-    --     pylsp = {
-    --       rope = {},
-    --       plugins = {
-    --         pylsp_rope = {
-    --           rename = false
-    --         },
-    --         rope_rename = {
-    --           enabled = false,
-    --         },
-    --         jedi = {
-    --           enabled = false,
-    --         },
-    --         jedi_completion = {
-    --           enabled = false,
-    --         },
-    --         jedi_definition = {
-    --           enabled = false,
-    --         },
-    --         jedi_hover = {
-    --           enabled = false,
-    --         },
-    --         jedi_symbols = {
-    --           enabled = false,
-    --         },
-    --         pycodestyle = {
-    --           enabled = false,
-    --         },
-    --         pylint = {
-    --           enabled = false,
-    --         },
-    --       },
-    --     },
-    --   },
-    -- })
+    -- joshuadavidthomas/django-language-server
+    vim.lsp.config('djls', {
+      init_options = {
+        django_settings_module = "mysite.settings",
+        venv_path = "/Users/mariusmenault/dev/greenday/.venv",
+      },
+    })
+    vim.lsp.enable('djls')
 
     vim.lsp.config('pyright', {
       root_markers = { 'manage.py' },
