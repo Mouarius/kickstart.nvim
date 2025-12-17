@@ -117,13 +117,13 @@ return { -- LSP Configuration & Plugins
     -- joshuadavidthomas/django-language-server
     vim.lsp.config('djls', {
       init_options = {
-        django_settings_module = "mysite.settings",
-        venv_path = "/Users/mariusmenault/dev/greenday/.venv",
+        django_settings_module = 'mysite.settings',
+        venv_path = '/Users/mariusmenault/dev/greenday/.venv',
       },
     })
-    vim.lsp.enable('djls')
+    vim.lsp.enable 'djls'
 
-    vim.lsp.config('pyright', {
+    vim.lsp.config('basedpyright', {
       root_markers = { 'manage.py' },
       handlers = {
         ['textDocument/publishDiagnostics'] = function(err, result, ctx, config)
@@ -140,7 +140,7 @@ return { -- LSP Configuration & Plugins
         end,
       },
       settings = {
-        pyright = {
+        basedpyright = {
           typeCheckingMode = 'off',
           disableOrganizeImports = true,
           analysis = {
@@ -172,6 +172,7 @@ return { -- LSP Configuration & Plugins
         },
       },
     })
+
     vim.lsp.config('lua_ls', {
       settings = {
         Lua = {
@@ -206,25 +207,17 @@ return { -- LSP Configuration & Plugins
       },
     })
 
-    local servers = {
-      cssls = {},
-      astro = {},
-      jinja_lsp = {},
-    }
-
-    local ensure_installed = vim.tbl_keys(servers or {})
-
-    vim.list_extend(ensure_installed, {
-      'stylua', -- Used to format Lua code
-    })
-
-    require('mason-tool-installer').setup {
-      ensure_installed = ensure_installed,
-    }
-
     require('mason-lspconfig').setup {
-      ensure_installed = {},
-      automatic_installation = false,
+      ensure_installed = {
+        'lua_ls',
+        'basedpyright',
+        'cssls',
+        'jsonls',
+        'ast_grep',
+        'bashls',
+        'ruff',
+        'ts_ls',
+      },
       automatic_enable = true,
     }
   end,
