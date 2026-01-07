@@ -5,17 +5,24 @@ return { -- Autoformat
     formatters_by_ft = {
       lua = { 'stylua' },
       python = { 'ruff_fix', 'ruff_format' },
-      htmldjango = { 'djlint' },
       astro = { 'biome' },
+      htmldjango = { 'djangofmt' },
     },
     formatters = {
       biome = {
         command = 'biome',
         args = { 'format', '--write', '--stdin-file-path', '$FILENAME' },
       },
+      djangofmt = {
+        command = 'djangofmt',
+        args = { '$FILENAME' },
+        stdin = false,
+        -- When stdin=false, use this template to generate the temporary file that gets formatted
+        tmpfile_format = '.conform.$RANDOM.$FILENAME',
+      },
     },
-    log_level = vim.log.levels.DEBUG,
   },
+
   keys = {
     {
       '<leader>cf',

@@ -19,14 +19,27 @@ M.get_python_venv = function()
   return vim.env.VIRTUAL_ENV
 end
 
-M.get_python_executable = function()
-  local venv_path = M.get_python_venv()
-
-  if venv_path ~= nil then
-    return venv_path .. '/bin/python3'
+M.get_python_path = function()
+  -- 1. Check if a virtualenv is already activated in the shell
+  if vim.env.VIRTUAL_ENV then
+    return vim.env.VIRTUAL_ENV .. '/bin/python'
   end
 
+  -- 2. Fallback: Look for a local .venv folder if nothing is active
+  local venv = vim.fs.find('.venv', { upward = true, stop = vim.uv.os_homedir() })[1]
+  if venv then
+    return venv .. '/bin/python'
+  end
+
+  -- 3. Last resort: use system python
   return vim.fn.exepath 'python3'
+end
+
+-- Helper to find the django settings module
+-- (This assumes your settings are in [project_name]/settings.py)
+M.get_django_settings = function()
+  local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ':t')
+  return project_name .. '.settings'
 end
 
 M.find_precommit_file = function()

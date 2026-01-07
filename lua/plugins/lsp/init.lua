@@ -118,27 +118,15 @@ return { -- LSP Configuration & Plugins
     vim.lsp.config('djls', {
       init_options = {
         django_settings_module = 'mysite.settings',
-        venv_path = '/Users/mariusmenault/dev/greenday/.venv',
+        venv_path = vim.fn.getcwd() .. '/.venv',
+        -- env_path = '/Users/mariusmenault/dev/greenday/.venv/bin/python',
       },
+      root_markers = { 'manage.py' },
     })
     -- vim.lsp.enable 'djls'
 
     vim.lsp.config('basedpyright', {
       root_markers = { 'manage.py' },
-      handlers = {
-        ['textDocument/publishDiagnostics'] = function(err, result, ctx, config)
-          -- In django, pyright keeps bothering me with "reportIncompatibleMethodOverride" errors with models Meta class
-          -- Those lines of code filters the diagnostics with those error codes from the pyright lsp output
-          local filtered_diagnostics = {}
-          for _, value in ipairs(result.diagnostics) do
-            if value ~= nil and value.code ~= 'reportIncompatibleVariableOverride' and value.code ~= 'reportIncompatibleMethodOverride' then
-              table.insert(filtered_diagnostics, value)
-            end
-          end
-          result.diagnostics = filtered_diagnostics
-          return vim.lsp.diagnostic.on_publish_diagnostics(err, result, ctx, config)
-        end,
-      },
       settings = {
         basedpyright = {
           typeCheckingMode = 'off',
@@ -146,11 +134,20 @@ return { -- LSP Configuration & Plugins
           analysis = {
             autoSearchPaths = false,
             diagnosticMode = 'openFilesOnly',
-            useLibraryCodeForTypes = true,
           },
         },
       },
     })
+
+    -- vim.lsp.config('ty', {
+    --   root_markers = { 'manage.py' },
+    --   settings = {
+    --     ty = {
+    --       disableLanguageServices = true
+    --     },
+    --   },
+    -- })
+    -- vim.lsp.enable 'ty'
 
     vim.lsp.config('ruff', {
       on_attach = function(client, bufnr)
@@ -210,6 +207,7 @@ return { -- LSP Configuration & Plugins
     require('mason-lspconfig').setup {
       ensure_installed = {
         'lua_ls',
+        -- 'ty',
         'basedpyright',
         'biome',
         'cssls',
