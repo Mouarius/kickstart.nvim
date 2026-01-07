@@ -2,18 +2,19 @@ return { -- Autoformat
   'stevearc/conform.nvim',
   lazy = false,
   opts = {
-    notify_on_error = false,
     formatters_by_ft = {
       lua = { 'stylua' },
       python = { 'ruff_fix', 'ruff_format' },
-      astro = { 'prettierd' },
-      json = { 'prettierd' },
       htmldjango = { 'djlint' },
-      javascript = { 'prettierd' },
-      javascriptreact = { 'prettierd' },
-      typescript = { 'prettierd' },
-      typescriptreact = { 'prettierd' },
+      astro = { 'biome' },
     },
+    formatters = {
+      biome = {
+        command = 'biome',
+        args = { 'format', '--write', '--stdin-file-path', '$FILENAME' },
+      },
+    },
+    log_level = vim.log.levels.DEBUG,
   },
   keys = {
     {

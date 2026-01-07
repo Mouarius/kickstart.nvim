@@ -121,7 +121,7 @@ return { -- LSP Configuration & Plugins
         venv_path = '/Users/mariusmenault/dev/greenday/.venv',
       },
     })
-    vim.lsp.enable 'djls'
+    -- vim.lsp.enable 'djls'
 
     vim.lsp.config('basedpyright', {
       root_markers = { 'manage.py' },
@@ -211,7 +211,9 @@ return { -- LSP Configuration & Plugins
       ensure_installed = {
         'lua_ls',
         'basedpyright',
+        'biome',
         'cssls',
+        'astro',
         'jsonls',
         'ast_grep',
         'bashls',
