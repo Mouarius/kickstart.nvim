@@ -8,13 +8,23 @@ return { -- Autoformat
       python = { 'ruff_fix', 'ruff_format' },
       astro = { 'prettierd' },
       json = { 'prettierd' },
-      htmldjango = { 'djlint' },
+      htmldjango = { 'djangofmt' },
       javascript = { 'prettierd' },
       javascriptreact = { 'prettierd' },
       typescript = { 'prettierd' },
       typescriptreact = { 'prettierd' },
     },
+    formatters = {
+      djangofmt = {
+        command = 'djangofmt',
+        args = { '$FILENAME' },
+        stdin = false,
+        -- When stdin=false, use this template to generate the temporary file that gets formatted
+        tmpfile_format = '.conform.$RANDOM.$FILENAME',
+      },
+    },
   },
+
   keys = {
     {
       '<leader>cf',
