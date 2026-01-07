@@ -1,7 +1,7 @@
 local M = {}
 
 M.handler_active = {
-  python = true,
+  python = false,
 }
 M.mason_ensure_installed = {
   'python',

@@ -97,7 +97,6 @@ return {
     local dap = require 'dap'
     local dapui = require 'dapui'
     local dap_config = require 'dap.config'
-    local utils = require 'utils'
 
     vim.fn.sign_define('DapBreakpoint', { text = '', texthl = '', linehl = '', numhl = '' })
     vim.fn.sign_define('DapBreakpointCondition', { text = '', texthl = '', linehl = '', numhl = '' })
@@ -110,28 +109,6 @@ return {
       -- You'll need to check that you have the required things installed
       -- online, please don't ask me how to install them :)
       ensure_installed = dap_config.mason_ensure_installed,
-    }
-
-    -- Dap UI setup
-    -- For more information, see |:help nvim-dap-ui|
-    dapui.setup {
-      -- -- Set icons to characters that are more likely to work in every terminal.
-      -- --    Feel free to remove or use ones that you like more! :)
-      -- --    Don't feel like these are good choices.
-      -- icons = { expanded = '▾', collapsed = '▸', current_frame = '*' },
-      -- controls = {
-      --   icons = {
-      --     pause = '⏸',
-      --     play = '▶',
-      --     step_into = '⏎',
-      --     step_over = '⏭',
-      --     step_out = '⏮',
-      --     step_back = 'b',
-      --     run_last = '▶▶',
-      --     terminate = '⏹',
-      --     disconnect = '⏏',
-      --   },
-      -- },
     }
 
     dap.listeners.after.event_initialized['dapui_config'] = dapui.open
