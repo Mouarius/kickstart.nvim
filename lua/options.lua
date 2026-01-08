@@ -13,8 +13,6 @@ vim.g.have_nerd_font = true
 
 -- [[ Setting options ]]
 -- See `:help vim.opt`
--- NOTE: You can change these options as you wish!
---  For more options, you can see `:help option-list`
 
 -- line numbers
 vim.opt.relativenumber = true
@@ -86,12 +84,6 @@ vim.opt.wrap = false
 
 -- [[ Styling ]]
 -- Diagnostics signs
--- vim.diagnostic.config().signs = {
--- vim.fn.sign_define('DiagnosticSignError', { text = ' ', texthl = 'DiagnosticSignError' })
--- vim.fn.sign_define('DiagnosticSignWarn', { text = ' ', texthl = 'DiagnosticSignWarn' })
--- vim.fn.sign_define('DiagnosticSignInfo', { text = ' ', texthl = 'DiagnosticSignInfo' })
--- vim.fn.sign_define('DiagnosticSignHint', { text = '󰌵', texthl = 'DiagnosticSignHint' })
-
 vim.diagnostic.config {
   signs = {
     text = {
@@ -108,7 +100,7 @@ vim.diagnostic.config {
 }
 -- Disable lsp virtual_text by default
 vim.diagnostic.config {
-  virtual_text = false,
+  virtual_text = true,
 }
 
 -- Filetypes detection

@@ -3,28 +3,20 @@ return { -- LSP Configuration & Plugins
   dependencies = {
     -- Automatically install LSPs and related tools to stdpath for Neovim
     { 'mason-org/mason.nvim', opts = {} }, -- NOTE: Must be loaded before dependants
-    {
-      'zapling/mason-lock.nvim',
-      init = function()
-        require('mason-lock').setup {
-          lockfile_path = vim.fn.stdpath 'config' .. '/mason-lock.json', -- (default)
-        }
-      end,
-    },
     'mason-org/mason-lspconfig.nvim',
     'WhoIsSethDaniel/mason-tool-installer.nvim',
     -- Useful status updates for LSP.
-    {
-      'j-hui/fidget.nvim',
-      opts = {
-        notification = {
-          override_vim_notify = true,
-          window = {
-            winblend = 0, -- Background color opacity in the notification window
-          },
-        },
-      },
-    },
+    -- {
+    --   'j-hui/fidget.nvim',
+    --   opts = {
+    --     notification = {
+    --       override_vim_notify = true,
+    --       window = {
+    --         winblend = 0, -- Background color opacity in the notification window
+    --       },
+    --     },
+    --   },
+    -- },
     'saghen/blink.cmp',
   },
   config = function()
@@ -139,16 +131,6 @@ return { -- LSP Configuration & Plugins
       },
     })
 
-    -- vim.lsp.config('ty', {
-    --   root_markers = { 'manage.py' },
-    --   settings = {
-    --     ty = {
-    --       disableLanguageServices = true
-    --     },
-    --   },
-    -- })
-    -- vim.lsp.enable 'ty'
-
     vim.lsp.config('ruff', {
       on_attach = function(client, bufnr)
         if client.name == 'ruff' then
@@ -207,7 +189,6 @@ return { -- LSP Configuration & Plugins
     require('mason-lspconfig').setup {
       ensure_installed = {
         'lua_ls',
-        -- 'ty',
         'basedpyright',
         'biome',
         'cssls',

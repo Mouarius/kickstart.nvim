@@ -31,11 +31,6 @@ return {
       template = 'Daily',
     },
   },
-  config = function(_, opts)
-    local obsidian = require 'obsidian'
-    obsidian.setup(opts)
-    -- vim.keymap.set('n', '<S-K>', '<cmd>ObsidianToggleCheckbox<cr>$a', { desc = 'Create checkbox and insert' })
-  end,
   keys = {
     { '<leader>nt', '<cmd>ObsidianToday<cr>', 'Open obsidian [T]oday' },
     { '<leader>ny', '<cmd>ObsidianYesterday<cr>', 'Open obsidian [Y]esterday' },

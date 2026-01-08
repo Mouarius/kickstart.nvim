@@ -15,14 +15,8 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup {
-  -- require 'kickstart.plugins.debug',
-  -- require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.indent_line',
-
   spec = {
     { import = 'plugins' },
-    { import = 'kickstart.plugins.debug' },
-    { import = 'kickstart.plugins.lint' },
   },
   install = { coloscheme = { 'catppuccin' } },
   checker = { enabled = false },

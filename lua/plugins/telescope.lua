@@ -12,7 +12,7 @@ return { -- Fuzzy Finder (files, lsp, etc)
       end,
     },
     { 'nvim-telescope/telescope-ui-select.nvim' },
-    { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
+    { 'echasnovski/mini.nvim', opts = {} },
   },
   config = function()
     require('telescope').setup {
@@ -25,11 +25,6 @@ return { -- Fuzzy Finder (files, lsp, etc)
           },
         },
       },
-      -- extensions = {
-      --   ['ui-select'] = {
-      --     require('telescope.themes').get_dropdown(),
-      --   },
-      -- },
     }
 
     pcall(require('telescope').load_extension, 'fzf')
