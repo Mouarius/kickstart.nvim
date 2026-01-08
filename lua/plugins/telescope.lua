@@ -12,6 +12,11 @@ return { -- Fuzzy Finder (files, lsp, etc)
       end,
     },
     { 'nvim-telescope/telescope-ui-select.nvim' },
+
+    {
+      'nvim-telescope/telescope-frecency.nvim',
+      version = '*',
+    },
     { 'echasnovski/mini.nvim', opts = {} },
   },
   config = function()
@@ -29,6 +34,7 @@ return { -- Fuzzy Finder (files, lsp, etc)
 
     pcall(require('telescope').load_extension, 'fzf')
     pcall(require('telescope').load_extension, 'ui-select')
+    pcall(require('telescope').load_extension, 'frecency')
 
     local builtin = require 'telescope.builtin'
     vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = '[F]ind [H]elp' })
