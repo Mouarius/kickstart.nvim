@@ -1,7 +1,7 @@
 return { -- Fuzzy Finder (files, lsp, etc)
   'nvim-telescope/telescope.nvim',
   event = 'VimEnter',
-  tag = '0.1.8',
+  tag = 'v0.2.1',
   dependencies = {
     'nvim-lua/plenary.nvim',
     {
@@ -48,7 +48,8 @@ return { -- Fuzzy Finder (files, lsp, etc)
     vim.keymap.set('n', '<leader>fd', builtin.diagnostics, { desc = '[F]ind [D]iagnostics' })
     vim.keymap.set('n', '<leader>fr', builtin.resume, { desc = '[F]ind [R]esume' })
     vim.keymap.set('n', '<leader>fo', builtin.oldfiles, { desc = '[F]ind Recent Files ("." for repeat)' })
-    vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
+    vim.keymap.set('n', '<leader><space>', '<cmd>Telescope frecency<cr>', { desc = '[F]ind Recent Files ("." for repeat)' })
+    vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = '[ ] Find existing buffers' })
     vim.keymap.set('n', '<leader>fp', builtin.pickers, { desc = '[F]ind recent [P]ickers' })
 
     vim.keymap.set('n', '<leader>f/', function()

@@ -1,5 +1,5 @@
-require 'keymaps'
 require 'options'
+require 'keymaps'
 require 'autocommands'
 require 'floaterminal'
 require 'config.lazy'
