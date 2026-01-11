@@ -5,18 +5,6 @@ return { -- LSP Configuration & Plugins
     { 'mason-org/mason.nvim', opts = {} }, -- NOTE: Must be loaded before dependants
     'mason-org/mason-lspconfig.nvim',
     'WhoIsSethDaniel/mason-tool-installer.nvim',
-    -- Useful status updates for LSP.
-    -- {
-    --   'j-hui/fidget.nvim',
-    --   opts = {
-    --     notification = {
-    --       override_vim_notify = true,
-    --       window = {
-    --         winblend = 0, -- Background color opacity in the notification window
-    --       },
-    --     },
-    --   },
-    -- },
     'saghen/blink.cmp',
   },
   config = function()
@@ -58,6 +46,31 @@ return { -- LSP Configuration & Plugins
         --  Useful when you're not sure what type a variable is and you want to see
         --  the definition of its *type*, not where it was *defined*.
         map('grt', require('telescope.builtin').lsp_type_definitions, '[G]oto [T]ype Definition')
+
+        -- Function to scroll the floating window
+        local function scroll_lsp_hover(direction)
+          return function()
+            -- Get all windows in the current tab
+            local wins = vim.api.nvim_tabpage_list_wins(0)
+            for _, win in ipairs(wins) do
+              local config = vim.api.nvim_win_get_config(win)
+              -- Check if the window is a floating window (relative to another window/editor)
+              if config.relative ~= '' then
+                -- Send the scroll command to that specific window
+                local key = direction == 'up' and '\x15' or '\x04' -- \x15 is <C-u>, \x04 is <C-d>
+                vim.api.nvim_win_call(win, function()
+                  vim.cmd('normal! ' .. key)
+                end)
+                return -- Exit after scrolling the first float found
+              end
+            end
+          end
+        end
+
+        -- Keymaps: Adjust these to your preferred keys
+        -- Use <C-f> for Page Down and <C-b> for Page Up
+        vim.keymap.set('n', '<C-f>', scroll_lsp_hover 'down', { desc = 'Scroll LSP float down' })
+        vim.keymap.set('n', '<C-b>', scroll_lsp_hover 'up', { desc = 'Scroll LSP float up' })
 
         -- The following two autocommands are used to highlight references of the
         -- word under your cursor when your cursor rests there for a little while.
@@ -171,19 +184,19 @@ return { -- LSP Configuration & Plugins
     })
 
     vim.lsp.config('tailwindcss', {
-      root_dir = function(bufnr, on_dir)
-        if utils.is_in_greenday(bufnr) then
-          local tailwind_root = vim.fn.getcwd() .. ''
-          on_dir(tailwind_root)
-        end
-      end,
-      settings = {
-        tailwindCSS = {
-          experimental = {
-            configFile = 'fronts/lib/firebolt/src/tailwind.config.cjs',
-          },
-        },
-      },
+      -- root_dir = function(bufnr, on_dir)
+      --   if utils.is_in_greenday(bufnr) then
+      --     local tailwind_root = vim.fn.getcwd() .. ''
+      --     on_dir(tailwind_root)
+      --   end
+      -- end,
+      -- settings = {
+      --   tailwindCSS = {
+      --     experimental = {
+      --       configFile = 'fronts/lib/firebolt/src/tailwind.config.cjs',
+      --     },
+      --   },
+      -- },
     })
 
     require('mason-lspconfig').setup {

@@ -5,13 +5,13 @@ return { -- Autoformat
     formatters_by_ft = {
       lua = { 'stylua' },
       python = { 'ruff_fix', 'ruff_format' },
-      astro = { 'biome' },
+      astro = { 'prettier', 'biome' },
       htmldjango = { 'djangofmt' },
     },
     formatters = {
       biome = {
         command = 'biome',
-        args = { 'format', '--write', '--stdin-file-path', '$FILENAME' },
+        args = { 'format', '--stdin-file-path', '$FILENAME', '--write', '--skip-parse-errors' },
       },
       djangofmt = {
         command = 'djangofmt',

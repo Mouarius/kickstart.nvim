@@ -17,6 +17,7 @@ vim.g.have_nerd_font = true
 -- line numbers
 vim.opt.relativenumber = true
 vim.opt.number = true
+vim.o.winborder = "rounded"
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = 'a'
@@ -24,7 +25,9 @@ vim.opt.mouse = 'a'
 -- Don't show the mode, since it's already in the status line
 vim.opt.showmode = false
 
-vim.o.conceallevel = 2
+vim.o.swapfile = false
+
+vim.o.conceallevel = 0
 
 -- Sync clipboard between OS and Neovim.
 --  Schedule the setting after `UiEnter` because it can increase startup-time.
@@ -107,5 +110,6 @@ vim.diagnostic.config {
 vim.filetype.add({
   pattern = {
     [".*/templates/.*%.html"] = "htmldjango",
+    ["%.mdx"] = "markdown",
   },
 })

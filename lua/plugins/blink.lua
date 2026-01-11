@@ -24,9 +24,6 @@ return {
     completion = {
       documentation = {
         auto_show = false,
-        window = {
-          border = 'rounded',
-        },
       },
       menu = {
         draw = {
@@ -39,13 +36,17 @@ return {
             },
           },
         },
-        border = 'rounded',
       },
     },
     -- Default list of enabled providers defined so that you can extend it
     -- elsewhere in your config, without redefining it, due to `opts_extend`
     sources = {
-      default = { 'lsp', 'lazydev', 'path', 'snippets', 'buffer', 'codeium' },
+      default = function()
+        if vim.bo.filetype == 'oil' then
+          return { 'lsp', 'path', 'buffer' }
+        end
+        return { 'lsp', 'lazydev', 'path', 'snippets', 'buffer', 'codeium' }
+      end,
       providers = {
         codeium = {
           name = 'codeium',
