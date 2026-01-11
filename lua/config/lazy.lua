@@ -18,7 +18,6 @@ require('lazy').setup {
   spec = {
     { import = 'plugins' },
   },
-  install = { coloscheme = { 'catppuccin' } },
   checker = { enabled = false },
   change_detection = {
     enabled = true,
