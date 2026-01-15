@@ -2,6 +2,7 @@ local pickers = require 'telescope.pickers'
 local finders = require 'telescope.finders'
 local make_entry = require 'telescope.make_entry'
 local conf = require('telescope.config').values
+local builtin = require 'telescope.builtin'
 
 local M = {}
 
@@ -28,10 +29,13 @@ local live_multigrep = function(opts)
       end
 
       ---@diagnostic disable-next-line: deprecated
-      return vim.iter({
-        args,
-        { '--color=never', '--no-heading', '--with-filename', '--line-number', '--column', '--smart-case' },
-      }):flatten():totable()
+      return vim
+        .iter({
+          args,
+          { '--color=never', '--no-heading', '--with-filename', '--line-number', '--column', '--smart-case' },
+        })
+        :flatten()
+        :totable()
     end,
     entry_maker = make_entry.gen_from_vimgrep(opts),
     cwd = opts.cwd,
@@ -64,10 +68,13 @@ local live_grep_class = function(opts)
       table.insert(args, 'class ' .. prompt)
 
       ---@diagnostic disable-next-line: deprecated
-      return vim.iter({
-        args,
-        { '--color=never', '--no-heading', '--with-filename', '--line-number', '--column', '--smart-case' },
-      }):flatten():totable()
+      return vim
+        .iter({
+          args,
+          { '--color=never', '--no-heading', '--with-filename', '--line-number', '--column', '--smart-case' },
+        })
+        :flatten()
+        :totable()
     end,
     entry_maker = make_entry.gen_from_vimgrep(opts),
     cwd = opts.cwd,
@@ -100,10 +107,13 @@ local live_grep_models = function(opts)
       table.insert(args, 'class ' .. prompt)
 
       ---@diagnostic disable-next-line: deprecated
-      return vim.iter({
-        args,
-        { '--color=never', '--no-heading', '--with-filename', '--line-number', '--column', '--smart-case', '-g', '**/models/**/*.py', '-g', '**/models.py' },
-      }):flatten():totable()
+      return vim
+        .iter({
+          args,
+          { '--color=never', '--no-heading', '--with-filename', '--line-number', '--column', '--smart-case', '-g', '**/models/**/*.py', '-g', '**/models.py' },
+        })
+        :flatten()
+        :totable()
     end,
     entry_maker = make_entry.gen_from_vimgrep(opts),
     cwd = opts.cwd,
@@ -120,9 +130,45 @@ local live_grep_models = function(opts)
     :find()
 end
 
+local django_template_picker = function(opts)
+  opts = opts or {}
+  local line = vim.api.nvim_get_current_line()
+
+  -- More robust regex:
+  -- 1. Look for '{%'
+  -- 2. Look for keywords (include, extends, etc) followed by space
+  -- 3. Capture everything between the first pair of quotes found
+  local full_path = line:match '{%%%s*.-%s+["\'](.-)["\']'
+  if full_path then
+    local filename = full_path:match '([^/]+)$' or full_path
+    builtin.find_files {
+      prompt_title = 'Django Template: ' .. full_path,
+      search_file = filename,
+      search_dir = { 'templates' },
+      no_ignore = false,
+    }
+  else
+    -- Fallback: Trigger the native 'gf' behavior
+    local keys = vim.api.nvim_replace_termcodes('gf', true, false, true)
+    vim.api.nvim_feedkeys(keys, 'n', false)
+  end
+end
+
 M.setup = function()
   vim.keymap.set('n', '<leader>fg', live_multigrep)
   vim.keymap.set('n', '<leader>fc', live_grep_class)
   vim.keymap.set('n', '<leader>fm', live_grep_models)
+
+  -- Filetype-specific Autocommand for 'gf'
+  vim.api.nvim_create_autocmd('FileType', {
+    group = vim.api.nvim_create_augroup('DjangoTelescope', { clear = true }),
+    pattern = { 'htmldjango' },
+    callback = function()
+      vim.keymap.set('n', 'gf', django_template_picker, {
+        buffer = true,
+        desc = 'Telescope Go-to-Template',
+      })
+    end,
+  })
 end
 return M

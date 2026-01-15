@@ -6,6 +6,8 @@ return {
   event = 'BufEnter',
   build = 'Codeium Auth',
   config = function()
+
+    vim.g.codeium_log_file = "~/.cache/nvim/codeium/codeium.log"
     require('codeium').setup {
       enable_cmp_source = true,
       virtual_text = {

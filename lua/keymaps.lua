@@ -100,3 +100,6 @@ vim.keymap.set('x', '<leader>p', "_dP'", { desc = 'Paste not deleted' })
 -- V
 vim.keymap.set('v', '>', '>gv', { desc = 'Indent selection' })
 vim.keymap.set('v', '<', '<gv', { desc = 'Deindent selection' })
+
+-- Add current line to quickfix list
+vim.keymap.set('n', '<leader>ca', ':caddexpr expand("%") . ":" . line(".") . ":" . getline(".")<CR>', { desc = "Add line to Quickfix" })
