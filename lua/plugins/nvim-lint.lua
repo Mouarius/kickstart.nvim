@@ -51,9 +51,9 @@ return {
             lint.linters_by_ft = linters_by_ft
             lint.try_lint()
             -- Run dmypy relative to mysite directory
-            -- if vim.bo.filetype == 'python' then
-            --   lint.try_lint('dmypy', { cwd = vim.fn.getcwd() .. '/mysite' })
-            -- end
+            if vim.bo.filetype == 'python' then
+              lint.try_lint('dmypy', { cwd = vim.fn.getcwd() .. '/mysite' })
+            end
           end
         end,
       })
