@@ -103,7 +103,7 @@ vim.diagnostic.config {
 }
 -- Disable lsp virtual_text by default
 vim.diagnostic.config {
-  virtual_text = true,
+  virtual_text = false,
 }
 
 -- Filetypes detection

@@ -8,10 +8,8 @@ return {
       local utils = require 'utils'
 
       local linters_by_ft = {
-        htmldjango = { 'djlint' },
         python = { 'dmypy' },
       }
-
 
       local dmypy = lint.linters.dmypy
       dmypy.cwd = vim.fn.getcwd() .. '/mysite'

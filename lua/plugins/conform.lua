@@ -6,6 +6,10 @@ return { -- Autoformat
       lua = { 'stylua' },
       python = { 'ruff_fix', 'ruff_format' },
       astro = { 'prettier', 'biome' },
+      javascript = { 'biome' },
+      typescript = { 'biome' },
+      javascriptreact = { 'biome' },
+      typescriptreact = { 'biome' },
       htmldjango = { 'djangofmt' },
     },
     formatters = {
@@ -15,7 +19,7 @@ return { -- Autoformat
       },
       djangofmt = {
         command = 'djangofmt',
-        args = { '$FILENAME' },
+        args = { '$FILENAME', '--custom-blocks', 'stage, cache, flatblock, section, csp_compress, premailer' },
         stdin = false,
         -- When stdin=false, use this template to generate the temporary file that gets formatted
         tmpfile_format = '.conform.$RANDOM.$FILENAME',
