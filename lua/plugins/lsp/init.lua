@@ -100,17 +100,6 @@ return { -- LSP Configuration & Plugins
             end,
           })
         end
-
-        -- The following code creates a keymap to toggle inlay hints in your
-        -- code, if the language server you are using supports them
-        --
-        -- This may be unwanted, since they displace some of your code
-        if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
-          vim.lsp.inlay_hint.enable()
-          map('<leader>th', function()
-            vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
-          end, '[T]oggle Inlay [H]ints')
-        end
       end,
     })
 
@@ -122,14 +111,14 @@ return { -- LSP Configuration & Plugins
 
     -- joshuadavidthomas/django-language-server
     vim.lsp.config('djls', {
+      cmd = { 'djls', 'serve' },
+      filetypes = { 'htmldjango', 'html' },
       init_options = {
         django_settings_module = 'mysite.settings',
-        venv_path = vim.fn.getcwd() .. '/.venv',
-        -- env_path = '/Users/mariusmenault/dev/greenday/.venv/bin/python',
       },
       root_markers = { 'manage.py' },
     })
-    -- vim.lsp.enable 'djls'
+    vim.lsp.enable 'djls'
 
     vim.lsp.config('basedpyright', {
       root_markers = { 'manage.py' },
